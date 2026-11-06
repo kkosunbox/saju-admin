@@ -3,13 +3,13 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 import { Fragment, useMemo, useState } from "react";
 import { BarChart } from "@/components/BarChart";
 import {
   DateRange,
   ErrorBox,
   Loading,
+  MemberLink,
   PageHeader,
   Pagination,
   QueryState,
@@ -303,17 +303,7 @@ function CallCells({ row }: { row: AiUsageRow }) {
     <>
       <td className="td text-ink-sub">{formatDateTime(row.createdAt)}</td>
       <td className="td">
-        {row.userId ? (
-          <Link
-            className="text-link hover:underline"
-            href={`/users/${row.userId}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            #{row.userId}
-          </Link>
-        ) : (
-          "-"
-        )}
+        <MemberLink userId={row.userId} email={row.userEmail} />
       </td>
       <td className="td">{AI_FEATURE[row.feature] ?? row.feature}</td>
       <td className="td">
@@ -399,17 +389,7 @@ function GroupRow({
         )}
       </td>
       <td className="td">
-        {head.userId ? (
-          <Link
-            className="text-link hover:underline"
-            href={`/users/${head.userId}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            #{head.userId}
-          </Link>
-        ) : (
-          "-"
-        )}
+        <MemberLink userId={head.userId} email={head.userEmail} />
       </td>
       <td className="td">{AI_FEATURE[head.feature] ?? head.feature}</td>
       <td className="td">

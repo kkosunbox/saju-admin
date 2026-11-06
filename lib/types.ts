@@ -89,6 +89,7 @@ export interface Entitlement {
 export interface Purchase {
   id: number;
   userId: number;
+  userEmail?: string | null;
   store: string;
   productId: string;
   kind: string;
@@ -108,6 +109,7 @@ export interface Purchase {
 export interface Subscription {
   id: number;
   userId: number;
+  userEmail?: string | null;
   store: string;
   productId: string;
   status: string;
@@ -166,6 +168,7 @@ export interface Dashboard {
 export interface AiUsageRow {
   id: number;
   userId: number | null;
+  userEmail?: string | null;
   feature: string;
   contentKey: string | null;
   refId: number | null;

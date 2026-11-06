@@ -2,9 +2,31 @@
 
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight, LoaderCircle, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect } from "react";
 import { errorMessage } from "@/lib/api";
 import type { Tone } from "@/lib/format";
+
+export function MemberLink({
+  userId,
+  email,
+}: {
+  userId: number | null;
+  email?: string | null;
+}) {
+  if (!userId) return "-";
+  const label = email?.trim() || "-";
+  return (
+    <Link
+      href={`/users/${userId}`}
+      title={email?.trim() || undefined}
+      className="block w-48 truncate text-link hover:underline"
+      onClick={(event) => event.stopPropagation()}
+    >
+      {label}
+    </Link>
+  );
+}
 
 export function PageHeader({
   title,

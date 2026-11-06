@@ -1,11 +1,11 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { useState } from "react";
 import {
   Badge,
   labelsOf,
+  MemberLink,
   PageHeader,
   Pagination,
   QueryState,
@@ -93,12 +93,7 @@ export default function SubscriptionsPage() {
                   <tr key={row.id}>
                     <td className="td text-ink-mute">{row.id}</td>
                     <td className="td">
-                      <Link
-                        className="text-link hover:underline"
-                        href={`/users/${row.userId}`}
-                      >
-                        #{row.userId}
-                      </Link>
+                      <MemberLink userId={row.userId} email={row.userEmail} />
                     </td>
                     <td className="td">
                       {STORE[row.store] ?? row.store}

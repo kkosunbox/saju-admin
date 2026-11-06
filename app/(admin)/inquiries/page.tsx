@@ -8,6 +8,7 @@ import {
   ErrorBox,
   InfoRows,
   Loading,
+  MemberLink,
   Modal,
   PageHeader,
   Pagination,
@@ -77,7 +78,9 @@ export default function InquiriesPage() {
                       ) : null}
                       <span className="text-ink-sub">{row.content}</span>
                     </td>
-                    <td className="td">#{row.userId}</td>
+                    <td className="td">
+                      <MemberLink userId={row.userId} email={row.user?.email} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -124,7 +127,7 @@ function InquiryModal({ id, onClose }: { id: number; onClose: () => void }) {
                   className="text-link hover:underline"
                   href={`/users/${data.userId}`}
                 >
-                  #{data.userId} {data.user?.email ?? ""}
+                  {data.user?.email?.trim() || "-"}
                 </Link>,
               ],
               ["연락처", data.contact],
