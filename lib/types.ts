@@ -168,6 +168,7 @@ export interface AiUsageRow {
   userId: number | null;
   feature: string;
   contentKey: string | null;
+  refId: number | null;
   step: string | null;
   model: string | null;
   status: string;
