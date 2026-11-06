@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "운Pick 관리자",
   icons: { icon: "/logo.webp" },
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: false, nocache: true, noimageindex: true, nosnippet: true },
 };
 
 export default function RootLayout({

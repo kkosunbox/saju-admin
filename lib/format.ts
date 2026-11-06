@@ -72,12 +72,6 @@ export const SUBSCRIPTION_STATUS: Record<string, [string, Tone]> = {
   expired: ["만료", "red"],
 };
 
-export const INQUIRY_STATUS: Record<string, [string, Tone]> = {
-  pending: ["답변 대기", "amber"],
-  in_progress: ["처리 중", "blue"],
-  resolved: ["답변 완료", "green"],
-};
-
 export const INQUIRY_CATEGORY: Record<string, string> = {
   account: "계정",
   payment: "결제",

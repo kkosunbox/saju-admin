@@ -72,13 +72,9 @@ export default function DashboardPage() {
             />
             <Link href="/inquiries" className="block">
               <Stat
-                label="답변 대기 문의"
+                label="접수된 문의"
                 value={formatNumber(data.pendingInquiries)}
-                hint={
-                  data.pendingInquiries
-                    ? "문의 화면에서 답변하기"
-                    : "모두 답변했어요"
-                }
+                hint="문의 화면에서 보기"
               />
             </Link>
           </div>

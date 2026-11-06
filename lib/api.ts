@@ -132,14 +132,9 @@ export const api = {
   subscriptions: (query: Query) =>
     request<Page<Subscription>>("/admin/subscriptions", { query }),
 
-  inquiries: (query: { page: number; limit: number; status?: string }) =>
+  inquiries: (query: { page: number; limit: number }) =>
     request<Page<Inquiry>>("/admin/inquiries", { query }),
   inquiry: (id: number) => request<Inquiry>(`/admin/inquiries/${id}`),
-  answerInquiry: (id: number, answer: string) =>
-    request<boolean>(`/admin/inquiries/${id}/answer`, {
-      method: "PATCH",
-      body: { answer },
-    }),
 
   aiUsage: (query: Query) =>
     request<Page<AiUsageRow>>("/admin/ai-usage", { query }),
