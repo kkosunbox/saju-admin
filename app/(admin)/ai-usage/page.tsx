@@ -23,6 +23,7 @@ import {
   AI_STATUS,
   contentTitle,
   formatDateTime,
+  stepTitle,
   formatNumber,
   formatWon,
   kstDate,
@@ -318,7 +319,10 @@ function CallCells({ row }: { row: AiUsageRow }) {
       <td className="td">
         {contentTitle(row.feature, row.contentKey)}
         {row.step && (
-          <span className="font-mono text-xs text-ink-mute"> · {row.step}</span>
+          <span className="text-ink-mute">
+            {" · "}
+            {stepTitle(row.feature, row.contentKey, row.step)}
+          </span>
         )}
       </td>
       <td className="td text-xs text-ink-sub">{row.model ?? "-"}</td>
@@ -350,7 +354,11 @@ function GroupRow({
 }) {
   const { rows } = group;
   const head = rows[0];
-  const steps = unique(rows.map((row) => row.step).filter(Boolean));
+  const steps = unique(
+    rows
+      .map((row) => row.step)
+      .filter((step): step is string => !!step),
+  );
   const models = unique(rows.map((row) => row.model).filter(Boolean));
   const statuses = statusCounts(rows);
   const newest = formatDateTime(head.createdAt);
@@ -406,11 +414,13 @@ function GroupRow({
       <td className="td">{AI_FEATURE[head.feature] ?? head.feature}</td>
       <td className="td">
         {contentTitle(head.feature, head.contentKey)}
-        {steps.length === 1 && (
-          <span className="font-mono text-xs text-ink-mute"> · {steps[0]}</span>
-        )}
-        {steps.length > 1 && (
-          <span className="text-ink-mute"> · {steps.length}단계</span>
+        {steps.length > 0 && (
+          <span className="text-ink-mute">
+            {" · "}
+            {steps
+              .map((step) => stepTitle(head.feature, head.contentKey, step))
+              .join(" · ")}
+          </span>
         )}
       </td>
       <td className="td text-xs text-ink-sub">

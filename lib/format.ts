@@ -198,6 +198,74 @@ export function contentTitle(
   return contentKey;
 }
 
+/** 앱 화면의 구간 이름. 같은 단계 키도 콘텐츠마다 다르다. */
+const STEP_TITLE: Record<string, Record<string, string>> = {
+  pet: {
+    portrait: "아이 이야기",
+    bond: "우리 사이",
+    days: "함께하는 하루",
+  },
+  spouse: {
+    portrait: "그 사람",
+    mine: "나의 배우자 운",
+    timing: "언제 만날까요",
+  },
+  saju: {
+    core: "타고난 성품",
+    structure: "사주 구조",
+    fields: "분야별 운",
+    flow: "대운·개운",
+  },
+  life: {
+    overview: "인생 요약",
+    daeun: "10년 대운",
+    years: "앞으로 10년",
+  },
+  newyear: {
+    overview: "올해 총운",
+    fields: "분야별 운세",
+    months: "12개월 흐름",
+  },
+  monthly: {
+    overview: "이달 총운",
+    days: "날짜별 흐름",
+  },
+  lucky: { days: "좋은 날" },
+  "theme:love": {
+    core: "연애 성향",
+    match: "잘 맞는 사람",
+    timing: "연애 시기",
+  },
+  "theme:money": { core: "재물 성향", timing: "재물 시기" },
+  "theme:career": { core: "직업 성향", timing: "커리어 시기" },
+  compat: {
+    bond: "두 사람의 인연",
+    fields: "분야별 궁합",
+    together: "함께 지내는 법",
+  },
+  crush: { heart: "그 사람의 마음", approach: "다가가는 법" },
+};
+
+const CONSULT_STEP: Record<string, string> = {
+  risk: "주제 분류",
+  preview: "미리보기",
+  answer: "답변",
+  rest: "나머지 답",
+  reply: "이어 묻기",
+};
+
+export function stepTitle(
+  feature: string,
+  contentKey: string | null | undefined,
+  step: string,
+): string {
+  if (feature === "consult") return CONSULT_STEP[step] ?? step;
+  if (feature === "daily_fortune") return step;
+  const kind = contentKey?.split(":")[0];
+  const exact = contentKey ? STEP_TITLE[contentKey]?.[step] : undefined;
+  return exact ?? (kind ? STEP_TITLE[kind]?.[step] : undefined) ?? step;
+}
+
 export const AI_STATUS: Record<string, [string, Tone]> = {
   ok: ["성공", "green"],
   refusal: ["거절", "amber"],
