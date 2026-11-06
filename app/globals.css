@@ -1,26 +1,54 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+    'Noto Sans KR', sans-serif;
+  --color-navy: #1d212d;
+  --color-navy-soft: #2c3242;
+  --color-accent: #28b2fe;
+  --color-accent-soft: #eaf7ff;
+  --color-link: #4392f7;
+  --color-canvas: #f5f6f8;
+  --color-line: #eceef2;
+  --color-line-strong: #e2e2e2;
+  --color-ink: #222222;
+  --color-ink-sub: #4f4f4f;
+  --color-ink-mute: #777777;
+  --color-danger: #e54d4d;
+  --color-success: #3daa6a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    font-feature-settings: 'tnum';
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility btn {
+  @apply inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+}
+@utility btn-primary {
+  @apply btn bg-navy text-white hover:bg-navy-soft;
+}
+@utility btn-outline {
+  @apply btn border border-line-strong bg-white text-ink-sub hover:bg-canvas;
+}
+@utility btn-danger {
+  @apply btn bg-danger text-white hover:opacity-90;
+}
+@utility input {
+  @apply h-9 rounded-lg border border-line-strong bg-white px-3 text-sm outline-none placeholder:text-ink-mute/70 focus:border-accent;
+}
+@utility textarea {
+  @apply w-full rounded-lg border border-line-strong bg-white px-3 py-2 text-sm leading-relaxed outline-none focus:border-accent;
+}
+@utility card {
+  @apply min-w-0 rounded-xl border border-line bg-white;
+}
+@utility th {
+  @apply border-b border-line bg-canvas px-4 py-2.5 text-left text-xs font-semibold whitespace-nowrap text-ink-mute;
+}
+@utility td {
+  @apply border-b border-line px-4 py-3 text-sm whitespace-nowrap;
 }
