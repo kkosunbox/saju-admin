@@ -4,7 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { DateRange, PageHeader, QueryState, Select } from "@/components/ui";
 import { api } from "@/lib/api";
-import { formatNumber, formatPercent, kstDate } from "@/lib/format";
+import {
+  formatNumber,
+  formatPercent,
+  kstDate,
+  promoItemTitle,
+  promoScreenTitle,
+} from "@/lib/format";
 
 export default function PromoPage() {
   const [filter, setFilter] = useState({
@@ -25,7 +31,9 @@ export default function PromoPage() {
     () =>
       [...new Set((all.data?.rows ?? []).map((row) => row.screen))]
         .sort()
-        .map((screen) => [screen, screen] as [string, string]),
+        .map(
+          (screen) => [screen, promoScreenTitle(screen)] as [string, string],
+        ),
     [all.data],
   );
 
@@ -73,8 +81,12 @@ export default function PromoPage() {
               <tbody>
                 {data?.rows.map((row) => (
                   <tr key={`${row.screen}|${row.item}`}>
-                    <td className="td text-ink-sub">{row.screen}</td>
-                    <td className="td font-mono text-xs">{row.item}</td>
+                    <td className="td text-ink-sub" title={row.screen}>
+                      {promoScreenTitle(row.screen)}
+                    </td>
+                    <td className="td" title={row.item}>
+                      {promoItemTitle(row.item)}
+                    </td>
                     <td className="td text-right">{formatNumber(row.views)}</td>
                     <td className="td text-right">
                       {formatNumber(row.clicks)}

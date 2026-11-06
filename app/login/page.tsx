@@ -23,9 +23,9 @@ export default function LoginPage() {
   }, [token, router]);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-canvas p-6">
+    <main className="flex min-h-dvh items-center justify-center bg-canvas p-4 sm:p-6">
       <form
-        className="w-full max-w-sm rounded-2xl border border-line bg-white p-8"
+        className="w-full max-w-sm rounded-2xl border border-line bg-white p-6 sm:p-8"
         onSubmit={(event) => {
           event.preventDefault();
           login.mutate({ username: username.trim(), password });

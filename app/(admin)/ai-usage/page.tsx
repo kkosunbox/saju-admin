@@ -159,7 +159,7 @@ export default function AiUsagePage() {
               <p className="border-b border-line px-5 py-3.5 text-sm font-semibold">
                 콘텐츠별 비용
               </p>
-              <div className="max-h-64 overflow-y-auto">
+              <div className="max-h-64 overflow-auto">
                 <table className="w-full">
                   <tbody>
                     {byContent.map((row) => (

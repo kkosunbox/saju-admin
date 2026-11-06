@@ -58,13 +58,13 @@ export default function UsersPage() {
             options={labelsOf(USER_STATUS)}
             placeholder="전체 상태"
           />
-          <div className="relative">
+          <div className="relative min-w-0 flex-1 sm:flex-none">
             <Search
               size={15}
               className="absolute top-1/2 left-3 -translate-y-1/2 text-ink-mute"
             />
             <input
-              className="input w-72 pl-8"
+              className="input w-full pl-8 sm:w-72"
               placeholder="검색"
               value={input}
               onChange={(event) => setInput(event.target.value)}

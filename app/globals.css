@@ -26,7 +26,7 @@
 }
 
 @utility btn {
-  @apply inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+  @apply inline-flex h-10 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 sm:h-9;
 }
 @utility btn-primary {
   @apply btn bg-navy text-white hover:bg-navy-soft;
@@ -37,11 +37,12 @@
 @utility btn-danger {
   @apply btn bg-danger text-white hover:opacity-90;
 }
+/* 16px below sm keeps iOS Safari from zooming in on focus. */
 @utility input {
-  @apply h-9 rounded-lg border border-line-strong bg-white px-3 text-sm outline-none placeholder:text-ink-mute/70 focus:border-accent;
+  @apply h-10 rounded-lg border border-line-strong bg-white px-3 text-base outline-none placeholder:text-ink-mute/70 focus:border-accent sm:h-9 sm:text-sm;
 }
 @utility textarea {
-  @apply w-full rounded-lg border border-line-strong bg-white px-3 py-2 text-sm leading-relaxed outline-none focus:border-accent;
+  @apply w-full rounded-lg border border-line-strong bg-white px-3 py-2 text-base leading-relaxed outline-none focus:border-accent sm:text-sm;
 }
 @utility card {
   @apply min-w-0 rounded-xl border border-line bg-white;

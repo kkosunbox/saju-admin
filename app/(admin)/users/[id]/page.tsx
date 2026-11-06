@@ -25,6 +25,7 @@ import {
 import { api } from "@/lib/api";
 import {
   ENTITLEMENT_SOURCE,
+  contentTitle,
   formatDate,
   formatDateTime,
   formatNumber,
@@ -60,7 +61,7 @@ export default function UserDetailPage() {
         <ArrowLeft size={15} /> 고객 목록
       </Link>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h1 className="text-xl font-bold">
             {profile?.nickname ?? `회원 ${user.id}`}
           </h1>
@@ -325,7 +326,14 @@ function Entitlements({ userId }: { userId: number }) {
             <tbody>
               {data.items.map((row) => (
                 <tr key={row.id}>
-                  <td className="td font-mono text-xs">{row.contentKey}</td>
+                  <td className="td" title={row.contentKey}>
+                    {contentTitle("premium_reading", row.contentKey)}
+                    {/^(?:compat|crush|pet):\d+$/.test(row.contentKey) && (
+                      <span className="ml-1.5 font-mono text-xs text-ink-mute">
+                        #{row.contentKey.split(":")[1]}
+                      </span>
+                    )}
+                  </td>
                   <td className="td">
                     {ENTITLEMENT_SOURCE[row.source] ?? row.source}
                   </td>

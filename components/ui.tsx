@@ -17,14 +17,16 @@ export function PageHeader({
 }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-      <div>
+      <div className="min-w-0">
         <h1 className="text-xl font-bold tracking-tight text-ink">{title}</h1>
         {description && (
           <p className="mt-1 text-sm text-ink-mute">{description}</p>
         )}
       </div>
       {actions && (
-        <div className="flex flex-wrap items-center gap-2">{actions}</div>
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          {actions}
+        </div>
       )}
     </div>
   );
@@ -83,7 +85,7 @@ export function Stat({
   return (
     <div
       className={clsx(
-        "rounded-xl border p-5",
+        "min-w-0 rounded-xl border p-4 sm:p-5",
         emphasis ? "border-navy bg-navy text-white" : "border-line bg-white",
       )}
     >
@@ -95,7 +97,9 @@ export function Stat({
       >
         {label}
       </p>
-      <p className="mt-2 text-2xl font-bold tracking-tight">{value}</p>
+      <p className="mt-2 text-xl font-bold tracking-tight [overflow-wrap:anywhere] sm:text-2xl">
+        {value}
+      </p>
       {hint && (
         <p
           className={clsx(
@@ -160,6 +164,28 @@ export function QueryState({
   return <>{children}</>;
 }
 
+/** First, last, and a window around the current page. Single gaps stay as numbers. */
+function pageWindow(current: number, total: number): (number | "gap")[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, index) => index + 1);
+  }
+
+  const visible = new Set<number>([1, total]);
+  for (let item = current - 2; item <= current + 2; item += 1) {
+    if (item >= 1 && item <= total) visible.add(item);
+  }
+
+  const items: (number | "gap")[] = [];
+  for (const item of [...visible].sort((a, b) => a - b)) {
+    const previous = items.at(-1);
+    if (typeof previous === "number" && item - previous > 1) {
+      items.push(item - previous === 2 ? previous + 1 : "gap");
+    }
+    items.push(item);
+  }
+  return items;
+}
+
 export function Pagination({
   page,
   total,
@@ -173,27 +199,56 @@ export function Pagination({
 }) {
   const pages = Math.max(1, Math.ceil(total / limit));
   return (
-    <div className="flex items-center justify-between px-4 py-3 text-sm text-ink-mute">
-      <span>총 {total.toLocaleString("ko-KR")}건</span>
-      <div className="flex items-center gap-1">
+    <div className="grid grid-cols-1 items-center justify-items-center gap-2 px-4 py-3 text-sm sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:justify-items-stretch sm:gap-3">
+      <span className="text-ink-mute">
+        총 {total.toLocaleString("ko-KR")}건
+      </span>
+      <div className="flex items-center justify-center gap-0.5">
         <button
-          className="btn-outline h-8 px-2"
+          type="button"
+          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-ink-mute transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+          aria-label="이전 페이지"
           disabled={page <= 1}
           onClick={() => onChange(page - 1)}
         >
-          <ChevronLeft size={15} />
+          <ChevronLeft size={16} />
         </button>
-        <span className="px-2 font-semibold text-ink">
-          {page} / {pages}
-        </span>
+        {pageWindow(page, pages).map((item, index) =>
+          item === "gap" ? (
+            <span key={`gap-${index}`} className="px-1 text-ink-mute" aria-hidden>
+              …
+            </span>
+          ) : (
+            <button
+              key={item}
+              type="button"
+              aria-label={`${item}페이지`}
+              aria-current={item === page ? "page" : undefined}
+              className={clsx(
+                "inline-flex h-8 min-w-8 cursor-pointer items-center justify-center rounded-md px-1.5 text-sm transition-colors",
+                item === page
+                  ? "font-semibold text-ink"
+                  : "text-ink-mute hover:text-ink",
+              )}
+              onClick={() => {
+                if (item !== page) onChange(item);
+              }}
+            >
+              {item}
+            </button>
+          ),
+        )}
         <button
-          className="btn-outline h-8 px-2"
+          type="button"
+          className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-ink-mute transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+          aria-label="다음 페이지"
           disabled={page >= pages}
           onClick={() => onChange(page + 1)}
         >
-          <ChevronRight size={15} />
+          <ChevronRight size={16} />
         </button>
       </div>
+      <span className="hidden sm:block" />
     </div>
   );
 }
@@ -244,10 +299,10 @@ export function DateRange({
   onChange: (range: { from: string; to: string }) => void;
 }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex w-full items-center gap-1.5 sm:w-auto">
       <input
         type="date"
-        className="input"
+        className="input min-w-0 flex-1 sm:flex-none"
         value={from}
         max={to || undefined}
         onChange={(e) => onChange({ from: e.target.value, to })}
@@ -255,7 +310,7 @@ export function DateRange({
       <span className="text-ink-mute">~</span>
       <input
         type="date"
-        className="input"
+        className="input min-w-0 flex-1 sm:flex-none"
         value={to}
         min={from || undefined}
         onChange={(e) => onChange({ from, to: e.target.value })}
@@ -283,7 +338,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-4 pt-[8vh]"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-3 pt-[5vh] sm:p-4 sm:pt-[8vh]"
       onMouseDown={onClose}
     >
       <div
@@ -303,7 +358,7 @@ export function Modal({
             <X size={18} />
           </button>
         </div>
-        <div className="p-5">{children}</div>
+        <div className="p-4 sm:p-5">{children}</div>
       </div>
     </div>
   );
@@ -334,7 +389,7 @@ export function InfoRows({ rows }: { rows: [string, React.ReactNode][] }) {
     <dl className="divide-y divide-line">
       {rows.map(([label, value]) => (
         <div key={label} className="flex gap-4 py-2.5 text-sm">
-          <dt className="w-24 shrink-0 text-ink-mute">{label}</dt>
+          <dt className="w-20 shrink-0 text-ink-mute sm:w-24">{label}</dt>
           <dd className="min-w-0 text-ink [overflow-wrap:anywhere]">
             {value ?? "-"}
           </dd>

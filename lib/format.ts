@@ -182,7 +182,14 @@ export function contentTitle(
   const fixed = CONTENT_TITLE[contentKey];
   if (fixed) return fixed;
   const [kind, arg, extra] = contentKey.split(":");
-  if (!arg || extra !== undefined) return contentKey;
+  if (extra !== undefined) return contentKey;
+  if (!arg) {
+    if (kind === "lucky") return "길일 찾기";
+    if (kind === "crush") return "그 사람의 속마음";
+    if (kind === "compat") return "심층 궁합";
+    if (kind === "pet") return "반려동물 궁합";
+    return contentKey;
+  }
   if (kind === "theme") return THEME_TITLE[arg] ?? contentKey;
   if (kind === "lucky") {
     return LUCKY_TITLE[arg] ? `${LUCKY_TITLE[arg]} 길일 TOP 5` : "길일 찾기";
@@ -196,6 +203,57 @@ export function contentTitle(
   if (kind === "crush") return "그 사람의 속마음";
   if (kind === "pet") return "반려동물 궁합";
   return contentKey;
+}
+
+/** 성과 카드. 콘텐츠 키는 앱 상품명, 간식 배너는 배너 제목. */
+export function promoItemTitle(item: string): string {
+  if (item === "snack") return "매달 15% 할인받는 간식 구독";
+  return contentTitle("premium_reading", item);
+}
+
+/** 프로모 카드가 붙은 앱 화면. */
+const PROMO_SCREEN: Record<string, string> = {
+  home: "홈",
+  content: "콘텐츠",
+  talisman: "오늘의 부적",
+  character: "나의 사주 캐릭터",
+  past_life: "전생 테스트",
+  mbti_match: "찰떡 MBTI",
+  combined: "오늘의 운세 · 종합풀이",
+  tarot: "타로",
+  pet: "반려동물 궁합",
+};
+
+const ANALYSIS_SCREEN: Record<string, string> = {
+  saju: "사주",
+  thai: "점성술",
+  mbti: "MBTI",
+  tarot: "타로",
+  blood: "혈액형",
+};
+
+const FORTUNE_TAB: Record<string, string> = {
+  daily: "오늘",
+  weekly: "주간",
+  monthly: "월간",
+  yearly: "연간",
+};
+
+export function promoScreenTitle(screen: string): string {
+  const fixed = PROMO_SCREEN[screen];
+  if (fixed) return fixed;
+  if (screen.startsWith("category_")) {
+    return FORTUNE_CATEGORY[screen.slice("category_".length)] ?? screen;
+  }
+  if (screen.startsWith("fortune_")) {
+    const tab = FORTUNE_TAB[screen.slice("fortune_".length)];
+    return tab ? `운세 · ${tab}` : screen;
+  }
+  if (screen.startsWith("analysis_")) {
+    const label = ANALYSIS_SCREEN[screen.slice("analysis_".length)];
+    return label ?? screen;
+  }
+  return screen;
 }
 
 /** 앱 화면의 구간 이름. 같은 단계 키도 콘텐츠마다 다르다. */

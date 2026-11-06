@@ -80,7 +80,7 @@ export default function DashboardPage() {
           </div>
 
           {today && (
-            <div className="card flex flex-wrap gap-x-8 gap-y-2 px-5 py-3.5 text-sm">
+            <div className="card flex flex-wrap gap-x-8 gap-y-1.5 px-4 py-3.5 text-sm sm:px-5">
               <span className="font-semibold">오늘 ({today.day.slice(5)})</span>
               <span className="text-ink-sub">
                 결제 {formatWon(today.amountKrw)} · {today.payments}건
@@ -153,7 +153,7 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="card p-5">
+    <div className="card p-4 sm:p-5">
       <p className="mb-4 text-sm font-semibold">{title}</p>
       {children}
     </div>
@@ -168,9 +168,9 @@ function CountCard({
   entries: [string, number][];
 }) {
   return (
-    <div className="card p-5">
+    <div className="card p-4 sm:p-5">
       <p className="mb-3 text-sm font-semibold">{title}</p>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {entries.map(([label, count]) => (
           <div key={label} className="rounded-lg bg-canvas px-3 py-2.5">
             <p className="text-xs text-ink-mute">{label}</p>

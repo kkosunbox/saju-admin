@@ -177,7 +177,7 @@ export default function FortuneTextsPage() {
                         )}
                       </td>
                     ))}
-                    <td className="td leading-relaxed whitespace-normal">
+                    <td className="td min-w-64 leading-relaxed whitespace-normal">
                       {row.text}
                     </td>
                     <td className="td align-top">
@@ -252,7 +252,7 @@ function TextModal({
     >
       <div className="space-y-4">
         {keys.length > 0 && (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             {keys.map((key) => (
               <Field key={key} label={KEY_LABEL[key] ?? key}>
                 {key === "category" && !text ? (
