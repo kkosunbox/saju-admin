@@ -4,6 +4,7 @@ import clsx from "clsx";
 import {
   Bot,
   CreditCard,
+  History,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -44,6 +45,7 @@ const GROUPS = [
       { href: "/promo", label: "콘텐츠 성과", icon: MousePointerClick },
       { href: "/fortune-texts", label: "문장 은행", icon: TextQuote },
       { href: "/settings", label: "시스템 설정", icon: Settings },
+      { href: "/changelog", label: "업데이트 이력", icon: History },
     ],
   },
 ];

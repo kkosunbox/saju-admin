@@ -11,6 +11,7 @@ import {
   QueryState,
 } from "@/components/ui";
 import { api } from "@/lib/api";
+import { CHANGELOG_KEY } from "@/lib/changelog";
 import { formatDateTime } from "@/lib/format";
 import type { Setting } from "@/lib/types";
 
@@ -20,7 +21,9 @@ export default function SettingsPage() {
     queryFn: api.settings,
   });
   const [editing, setEditing] = useState<Setting | "new" | null>(null);
-  const settings = data?.settings ?? [];
+  const settings = (data?.settings ?? []).filter(
+    (setting) => setting.key !== CHANGELOG_KEY,
+  );
 
   return (
     <>
