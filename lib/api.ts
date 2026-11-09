@@ -1,5 +1,11 @@
 import { getToken, setToken } from "./session";
 import type {
+  ChangeArea,
+  ChangeNote,
+  ChangeNoteInput,
+  ChangelogPage,
+} from "./changelog";
+import type {
   Admin,
   AiUsageRow,
   AiUsageSummary,
@@ -181,6 +187,15 @@ export const api = {
     url?: string;
   }) =>
     request<PushCampaign>("/admin/push/campaigns", { method: "POST", body }),
+
+  changelog: (query: { page?: number; limit?: number; area?: ChangeArea }) =>
+    request<ChangelogPage>("/admin/changelog", { query }),
+  createChangelog: (body: ChangeNoteInput) =>
+    request<ChangeNote>("/admin/changelog", { method: "POST", body }),
+  updateChangelog: (id: number, body: ChangeNoteInput) =>
+    request<ChangeNote>(`/admin/changelog/${id}`, { method: "PATCH", body }),
+  deleteChangelog: (id: number) =>
+    request<{ id: number }>(`/admin/changelog/${id}`, { method: "DELETE" }),
 
   settings: () => request<{ settings: Setting[] }>("/admin/settings"),
   createSetting: (body: { key: string; value: string; description?: string }) =>
