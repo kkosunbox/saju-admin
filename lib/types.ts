@@ -244,3 +244,33 @@ export interface Setting {
   description?: string | null;
   updatedAt: string;
 }
+
+export type PushCampaignTarget = "users" | "all";
+export type PushCampaignKind = "ad" | "info";
+export type PushCampaignStatus = "sending" | "done" | "failed";
+
+export interface PushAudience {
+  users: number;
+  devices: number;
+}
+
+export interface PushCampaign {
+  id: number;
+  adminId: number;
+  adminName: string;
+  target: PushCampaignTarget;
+  kind: PushCampaignKind;
+  userIds: number[] | null;
+  title: string | null;
+  body: string;
+  url: string | null;
+  status: PushCampaignStatus;
+  users: number;
+  devices: number;
+  sent: number;
+  failed: number;
+  removed: number;
+  errorMessage: string | null;
+  createdAt: string;
+  completedAt: string | null;
+}

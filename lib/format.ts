@@ -50,6 +50,22 @@ export function kstDate(daysAgo = 0): string {
 
 export type Tone = "gray" | "blue" | "green" | "amber" | "red" | "navy";
 
+export const PUSH_KIND: Record<string, [string, Tone]> = {
+  info: ["안내", "blue"],
+  ad: ["광고", "amber"],
+};
+
+export const PUSH_TARGET: Record<string, string> = {
+  users: "선택한 고객",
+  all: "전체",
+};
+
+export const PUSH_STATUS: Record<string, [string, Tone]> = {
+  sending: ["보내는 중", "amber"],
+  done: ["완료", "green"],
+  failed: ["실패", "red"],
+};
+
 export const USER_STATUS: Record<string, [string, Tone]> = {
   guest: ["게스트", "gray"],
   active: ["회원", "green"],

@@ -11,6 +11,10 @@ import type {
   PointTransaction,
   PromoRow,
   Purchase,
+  PushAudience,
+  PushCampaign,
+  PushCampaignKind,
+  PushCampaignTarget,
   Setting,
   Subscription,
   UserDetail,
@@ -158,6 +162,25 @@ export const api = {
       method: "PATCH",
       body,
     }),
+
+  pushAudience: (body: {
+    target: PushCampaignTarget;
+    kind: PushCampaignKind;
+    userIds?: number[];
+  }) => request<PushAudience>("/admin/push/audience", { method: "POST", body }),
+  pushCampaigns: (query: { page: number; limit: number }) =>
+    request<Page<PushCampaign>>("/admin/push/campaigns", { query }),
+  pushCampaign: (id: number) =>
+    request<PushCampaign>(`/admin/push/campaigns/${id}`),
+  sendPush: (body: {
+    target: PushCampaignTarget;
+    kind: PushCampaignKind;
+    userIds?: number[];
+    title?: string;
+    body: string;
+    url?: string;
+  }) =>
+    request<PushCampaign>("/admin/push/campaigns", { method: "POST", body }),
 
   settings: () => request<{ settings: Setting[] }>("/admin/settings"),
   createSetting: (body: { key: string; value: string; description?: string }) =>

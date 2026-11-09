@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import {
+  Bell,
   Bot,
   CreditCard,
   History,
@@ -41,6 +42,7 @@ const GROUPS = [
   {
     label: "운영",
     items: [
+      { href: "/push", label: "앱 푸시", icon: Bell },
       { href: "/ai-usage", label: "AI 비용", icon: Bot },
       { href: "/promo", label: "콘텐츠 성과", icon: MousePointerClick },
       { href: "/fortune-texts", label: "문장 은행", icon: TextQuote },

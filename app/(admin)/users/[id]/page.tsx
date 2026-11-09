@@ -69,6 +69,9 @@ export default function UserDetailPage() {
           <span className="text-sm text-ink-mute">#{user.id}</span>
         </div>
         <div className="flex gap-2">
+          <Link href={`/push?userId=${user.id}`} className="btn-outline">
+            푸시 보내기
+          </Link>
           <button className="btn-outline" onClick={() => setModal("status")}>
             상태 변경
           </button>
