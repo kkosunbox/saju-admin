@@ -226,9 +226,7 @@ export default function ChangelogPage() {
                         </p>
                         <div className="mt-3 flex items-center gap-3 text-xs font-semibold">
                           <span className="mr-auto font-medium text-ink-mute">
-                            {note.createdAt
-                              ? `${formatDateTime(note.createdAt)} 등록`
-                              : ""}
+                            {note.createdAt ? formatDateTime(note.createdAt) : ""}
                           </span>
                           <button
                             className="text-ink-mute hover:text-ink disabled:opacity-40"
