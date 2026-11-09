@@ -22,7 +22,7 @@ import {
   type ChangeArea,
   type ChangeNote,
 } from "@/lib/changelog";
-import { kstDate } from "@/lib/format";
+import { formatDateTime, kstDate } from "@/lib/format";
 import type { Tone } from "@/lib/format";
 
 const AREA_TONE: Record<ChangeArea, Tone> = {
@@ -224,7 +224,12 @@ export default function ChangelogPage() {
                         <p className="mt-1.5 text-sm leading-relaxed whitespace-pre-wrap text-ink-sub">
                           {note.detail}
                         </p>
-                        <div className="mt-3 flex justify-end gap-3 text-xs font-semibold">
+                        <div className="mt-3 flex items-center gap-3 text-xs font-semibold">
+                          <span className="mr-auto font-medium text-ink-mute">
+                            {note.createdAt
+                              ? `${formatDateTime(note.createdAt)} 등록`
+                              : ""}
+                          </span>
                           <button
                             className="text-ink-mute hover:text-ink disabled:opacity-40"
                             disabled={!persisted || save.isPending}
@@ -360,6 +365,8 @@ function NoteModal({
       ),
       title: nextTitle,
       detail: nextDetail,
+      // 수정해도 처음 등록한 시각은 그대로 둔다
+      createdAt: note ? note.createdAt : new Date().toISOString(),
     });
   }
 

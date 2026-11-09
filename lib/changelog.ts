@@ -8,6 +8,8 @@ export interface ChangeNote {
   areas: ChangeArea[];
   title: string;
   detail: string;
+  /** 어드민에 등록한 시각(ISO). 이 필드가 생기기 전 기록에는 없다. */
+  createdAt?: string;
 }
 
 /** system_setting 키. 업데이트 이력 화면에서만 읽고 쓴다. */
@@ -94,6 +96,10 @@ export function parseChangelog(value: string): ChangeNote[] | null {
       areas: [...areas],
       title: row.title.trim(),
       detail: row.detail.trim(),
+      ...(typeof row.createdAt === "string" &&
+      !Number.isNaN(Date.parse(row.createdAt))
+        ? { createdAt: row.createdAt }
+        : {}),
     });
   }
   return notes;
