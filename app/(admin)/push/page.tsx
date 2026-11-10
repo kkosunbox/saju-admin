@@ -23,6 +23,12 @@ import {
 } from "@/components/ui";
 import { api } from "@/lib/api";
 import {
+  PUSH_PRESET_GROUPS,
+  PUSH_PRESETS,
+  type PushPreset,
+  type PushPresetGroup,
+} from "@/lib/push-presets";
+import {
   formatDateTime,
   formatNumber,
   PUSH_KIND,
@@ -119,7 +125,16 @@ function PushPageInner() {
   const [confirming, setConfirming] = useState(false);
   const [openId, setOpenId] = useState<number | null>(null);
   const [page, setPage] = useState(1);
+  const [presetIdUsed, setPresetIdUsed] = useState<string | null>(null);
   const quiet = kind === "ad" && isAdQuietHours();
+
+  function applyPreset(item: PushPreset) {
+    setPresetIdUsed(item.id);
+    setKind(item.kind);
+    setTitle(item.title);
+    setBody(item.body);
+    setUrl(item.url);
+  }
 
   const preset = useQuery({
     queryKey: ["user", presetId],
@@ -181,6 +196,7 @@ function PushPageInner() {
       setTitle("");
       setBody("");
       setUrl("");
+      setPresetIdUsed(null);
     },
   });
 
@@ -199,6 +215,7 @@ function PushPageInner() {
       />
 
       <section className="card mb-4 p-4 sm:p-5">
+        <PresetPicker activeId={presetIdUsed} onPick={applyPreset} />
         <div className="grid gap-5 lg:grid-cols-2">
           <div className="space-y-4">
             <Toggle
@@ -439,6 +456,66 @@ function PushPageInner() {
         <CampaignModal id={openId} onClose={() => setOpenId(null)} />
       )}
     </>
+  );
+}
+
+function PresetPicker({
+  activeId,
+  onPick,
+}: {
+  activeId: string | null;
+  onPick: (item: PushPreset) => void;
+}) {
+  const [group, setGroup] = useState<PushPresetGroup>(PUSH_PRESET_GROUPS[0]);
+  const items = PUSH_PRESETS.filter((item) => item.group === group);
+  const active = PUSH_PRESETS.find((item) => item.id === activeId);
+
+  return (
+    <div className="mb-5 border-b border-line pb-5">
+      <p className="mb-1.5 text-xs font-semibold text-ink-sub">
+        프리셋 · 누르면 아래 칸이 채워집니다. 고쳐서 보내도 됩니다.
+      </p>
+      <div className="mb-2 flex flex-wrap gap-1.5">
+        {PUSH_PRESET_GROUPS.map((name) => (
+          <button
+            key={name}
+            type="button"
+            className={
+              group === name
+                ? "rounded-md bg-ink px-2.5 py-1 text-xs font-semibold text-white"
+                : "rounded-md bg-canvas px-2.5 py-1 text-xs font-semibold text-ink-sub hover:bg-line"
+            }
+            onClick={() => setGroup(name)}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={
+              item.id === activeId
+                ? "btn-primary text-sm"
+                : "btn-outline text-sm"
+            }
+            onClick={() => onPick(item)}
+          >
+            {item.label}
+            {item.kind === "ad" && (
+              <span className="ml-1 text-xs opacity-70">광고</span>
+            )}
+          </button>
+        ))}
+      </div>
+      {active && (
+        <p className="mt-2 text-xs leading-relaxed text-ink-mute">
+          {active.note}
+        </p>
+      )}
+    </div>
   );
 }
 
