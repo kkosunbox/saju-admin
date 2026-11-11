@@ -6,7 +6,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { Search, X } from "lucide-react";
+import { ArrowRight, Bell, Check, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
@@ -23,6 +23,8 @@ import {
 } from "@/components/ui";
 import { api } from "@/lib/api";
 import {
+  PUSH_DESTINATIONS,
+  pushDestinationLabel,
   PUSH_PRESET_GROUPS,
   PUSH_PRESETS,
   type PushPreset,
@@ -268,19 +270,43 @@ function PushPageInner() {
               />
             </Field>
             <Field
-              label="열 경로"
-              hint="알림을 누르면 열리는 앱 경로. 비우면 앱만 엽니다."
+              label="알림을 누르면 열 화면"
+              hint="화면을 선택하면 해당 화면으로 이동합니다. 선택하지 않으면 앱만 엽니다."
             >
-              <input
-                className="input w-full font-mono"
-                maxLength={200}
+              <select
+                className="input w-full"
                 value={url}
                 onChange={(event) => setUrl(event.target.value)}
-                placeholder="/fortune"
-              />
+              >
+                <option value="">앱만 열기</option>
+                {["기본 화면", "프리미엄 운세"].map((group) => (
+                  <optgroup key={group} label={group}>
+                    {PUSH_DESTINATIONS.filter((item) => item.group === group).map((item) => (
+                      <option key={item.url} value={item.url}>{item.label}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
             </Field>
           </div>
           <div className="space-y-4">
+            <div className="rounded-xl border border-line bg-canvas p-4">
+              <p className="mb-3 text-xs font-semibold text-ink-mute">알림 미리보기</p>
+              <div className="rounded-lg bg-white p-4">
+                <div className="mb-2 flex items-center gap-2 text-xs text-ink-mute">
+                  <Bell size={14} className="text-ink-sub" />
+                  <span className="font-semibold text-ink-sub">운Pick</span>
+                  <span className="ml-auto">지금</span>
+                </div>
+                {title.trim() && <p className="text-sm font-semibold break-words">{displayTitle(kind, title)}</p>}
+                <p className="mt-1 text-sm leading-relaxed whitespace-pre-wrap break-words text-ink-sub">
+                  {body.trim() || "본문을 입력하면 알림이 여기에 표시됩니다."}
+                </p>
+              </div>
+              <p className="mt-3 flex items-center gap-1.5 text-xs text-ink-mute">
+                <ArrowRight size={13} /> {pushDestinationLabel(url)}
+              </p>
+            </div>
             {target === "users" && (
               <UserPicker picked={picked} onChange={setPicked} />
             )}
@@ -430,7 +456,7 @@ function PushPageInner() {
                 ["기기", `${formatNumber(audience.data?.devices ?? 0)}대`],
                 ["제목", displayTitle(kind, title) || "-"],
                 ["본문", body.trim()],
-                ["경로", url.trim() || "-"],
+                ["열 화면", pushDestinationLabel(url)],
               ]}
             />
             {send.error && <ErrorBox error={send.error} />}
@@ -471,51 +497,66 @@ function PresetPicker({
   const active = PUSH_PRESETS.find((item) => item.id === activeId);
 
   return (
-    <div className="mb-5 border-b border-line pb-5">
-      <p className="mb-1.5 text-xs font-semibold text-ink-sub">
-        프리셋 · 누르면 아래 칸이 채워집니다. 고쳐서 보내도 됩니다.
-      </p>
-      <div className="mb-2 flex flex-wrap gap-1.5">
+    <section className="mb-6 border-b border-line pb-6" aria-labelledby="preset-heading">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h2 id="preset-heading" className="text-sm font-bold">푸시 프리셋</h2>
+          <p className="mt-1 text-xs leading-relaxed text-ink-mute">
+            상황에 맞는 문구를 선택하세요. 제목·본문·이동 화면이 채워지며 자유롭게 수정할 수 있습니다.
+          </p>
+        </div>
+        <span className="text-xs text-ink-mute">총 {PUSH_PRESETS.length}개</span>
+      </div>
+      <div className="mb-4 flex flex-wrap gap-1.5" role="group" aria-label="프리셋 분류">
         {PUSH_PRESET_GROUPS.map((name) => (
           <button
             key={name}
             type="button"
-            className={
-              group === name
-                ? "rounded-md bg-ink px-2.5 py-1 text-xs font-semibold text-white"
-                : "rounded-md bg-canvas px-2.5 py-1 text-xs font-semibold text-ink-sub hover:bg-line"
-            }
+            aria-pressed={group === name}
+            className={`cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+              group === name ? "bg-navy text-white" : "bg-canvas text-ink-sub hover:bg-line"
+            }`}
             onClick={() => setGroup(name)}
           >
             {name}
           </button>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {items.map((item) => (
           <button
             key={item.id}
             type="button"
-            className={
+            aria-pressed={item.id === activeId}
+            className={`flex cursor-pointer flex-col rounded-xl border p-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
               item.id === activeId
-                ? "btn-primary text-sm"
-                : "btn-outline text-sm"
-            }
+                ? "border-accent bg-accent-soft"
+                : "border-line bg-white hover:border-line-strong hover:bg-canvas/60"
+            }`}
             onClick={() => onPick(item)}
           >
-            {item.label}
-            {item.kind === "ad" && (
-              <span className="ml-1 text-xs opacity-70">광고</span>
-            )}
+            <span className="mb-3 flex w-full items-center justify-between gap-2">
+              <span className="text-xs font-semibold text-ink-mute">{item.label}</span>
+              <StatusBadge map={PUSH_KIND} value={item.kind} />
+            </span>
+            <span className="text-sm font-semibold leading-relaxed">{item.title}</span>
+            <span className="mt-1.5 text-xs leading-relaxed text-ink-sub">{item.body}</span>
+            <span className="mt-auto flex w-full items-center justify-between gap-2 pt-4 text-xs text-ink-mute">
+              <span className="flex items-center gap-1"><ArrowRight size={13} />{pushDestinationLabel(item.url)}</span>
+              {item.id === activeId ? (
+                <span className="flex items-center gap-1 font-semibold text-ink"><Check size={13} />적용됨</span>
+              ) : <span>문구 사용</span>}
+            </span>
           </button>
         ))}
       </div>
       {active && (
-        <p className="mt-2 text-xs leading-relaxed text-ink-mute">
-          {active.note}
-        </p>
+        <div className="mt-3 rounded-lg bg-canvas px-4 py-3 text-xs leading-relaxed" role="status">
+          <span className="font-semibold text-ink-sub">{active.label} · 발송 팁</span>
+          <p className="mt-1 text-ink-mute">{active.note}</p>
+        </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -714,7 +755,7 @@ function CampaignDetail({
             `발송 ${formatNumber(campaign.sent)} · 실패 ${formatNumber(campaign.failed)} · 정리 ${formatNumber(campaign.removed)}`,
           ],
           ["제목", campaign.title],
-          ["경로", campaign.url],
+          ["열 화면", pushDestinationLabel(campaign.url)],
         ]}
       />
       <div className="rounded-xl bg-canvas p-4">

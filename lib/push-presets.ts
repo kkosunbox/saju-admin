@@ -1,5 +1,25 @@
 import type { PushCampaignKind } from "@/lib/types";
 
+/** 개별 ID나 선행 입력 없이 열 수 있는 앱 화면만 등록한다. */
+export const PUSH_DESTINATIONS = [
+  { group: "기본 화면", label: "홈", url: "/" },
+  { group: "기본 화면", label: "오늘의 운세", url: "/fortune" },
+  { group: "기본 화면", label: "콘텐츠", url: "/content" },
+  { group: "기본 화면", label: "운알톡", url: "/consult" },
+  { group: "기본 화면", label: "궁합", url: "/compatibility" },
+  { group: "기본 화면", label: "마이", url: "/my" },
+  { group: "프리미엄 운세", label: "길일 찾기", url: "/premium/lucky" },
+  { group: "프리미엄 운세", label: "월별 상세운세", url: "/premium/monthly" },
+  { group: "프리미엄 운세", label: "신년운세", url: "/premium/new-year" },
+  { group: "프리미엄 운세", label: "평생운", url: "/premium/life" },
+  { group: "프리미엄 운세", label: "상세사주 해석", url: "/premium/saju" },
+];
+
+export function pushDestinationLabel(url?: string | null) {
+  if (!url) return "앱만 열기";
+  return PUSH_DESTINATIONS.find((item) => item.url === url)?.label ?? url;
+}
+
 /**
  * 앱 푸시 화면에서 눌러 채우는 문구 모음.
  * 캠페인은 모두에게 같은 글이 나가므로 이름·띠 같은 개인 값은 넣지 않고,
