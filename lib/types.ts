@@ -127,6 +127,29 @@ export interface Subscription {
   createdAt: string;
 }
 
+/** 구독 혜택 사용 한 건 (운알톡 · 월별 상세운세 · 출석 2배). */
+export interface SubscriptionBenefitUsage {
+  id: number;
+  periodCount: number;
+  kind: "consult" | "monthly" | "attendance";
+  /** 상담 id · 콘텐츠 키 · 출석 날짜 */
+  refId: string;
+  createdAt: string;
+}
+
+export interface SubscriptionBenefits {
+  periodCount: number;
+  summary: {
+    active: boolean;
+    consultTotal: number;
+    consultUsed: number;
+    consultLeft: number;
+    monthlyContentKey: string;
+    attendanceMultiplier: number;
+  };
+  usage: SubscriptionBenefitUsage[];
+}
+
 export interface Inquiry {
   id: number;
   userId: number;

@@ -23,6 +23,7 @@ import type {
   PushCampaignTarget,
   Setting,
   Subscription,
+  SubscriptionBenefits,
   UserDetail,
   UserRow,
 } from "./types";
@@ -141,6 +142,17 @@ export const api = {
     request<Page<Purchase>>("/admin/purchases", { query }),
   subscriptions: (query: Query) =>
     request<Page<Subscription>>("/admin/subscriptions", { query }),
+  subscriptionBenefits: (id: number) =>
+    request<SubscriptionBenefits>(`/admin/subscriptions/${id}/benefits`),
+  /** 이번 회차 결제를 토스에서 취소하고 구독을 바로 끝냅니다. */
+  refundSubscription: (id: number, body: { reason: string }) =>
+    request<{
+      subscriptionId: number;
+      status: string;
+      purchaseId: number;
+      refundedKrw: number;
+      refundedAt: string;
+    }>(`/admin/subscriptions/${id}/refund`, { method: "POST", body }),
 
   inquiries: (query: { page: number; limit: number }) =>
     request<Page<Inquiry>>("/admin/inquiries", { query }),
