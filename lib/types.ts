@@ -18,9 +18,24 @@ export interface UserRow {
   phone: string | null;
   status: UserStatus;
   nickname: string | null;
+  profileCount: number;
   balance: number;
   providers: string[];
   lastActiveAt: string | null;
+  createdAt: string;
+}
+
+export interface FortuneProfile {
+  id: number;
+  isPrimary: boolean;
+  relationship: string;
+  nickname: string;
+  gender: string;
+  calendarType: string;
+  birthDateInput: string;
+  isLeapMonth: boolean;
+  birthTime: string | null;
+  mbti: string;
   createdAt: string;
 }
 
@@ -38,16 +53,9 @@ export interface UserDetail {
     createdAt: string;
     updatedAt: string;
   };
-  profile: {
-    nickname: string;
-    gender: string;
-    calendarType: string;
-    birthDateInput: string;
-    isLeapMonth: boolean;
-    birthTime: string | null;
-    mbti: string;
-    createdAt: string;
-  } | null;
+  profile: FortuneProfile | null;
+  profiles: FortuneProfile[];
+  profileCount: number;
   socialAccounts: {
     provider: string;
     email: string;

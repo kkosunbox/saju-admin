@@ -32,6 +32,7 @@ import {
   formatWon,
   POINT_TYPE,
   PROVIDER,
+  PROFILE_RELATIONSHIP,
   PURCHASE_STATUS,
   STORE,
   SUBSCRIPTION_STATUS,
@@ -50,7 +51,7 @@ export default function UserDetailPage() {
 
   if (isLoading) return <Loading />;
   if (error || !data) return <ErrorBox error={error} />;
-  const { user, profile } = data;
+  const { user, profile, profiles } = data;
 
   return (
     <>
@@ -81,7 +82,7 @@ export default function UserDetailPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-2">
         <section className="card p-5">
           <h2 className="mb-2 text-sm font-semibold">회원 정보</h2>
           <InfoRows
@@ -124,32 +125,6 @@ export default function UserDetailPage() {
           />
         </section>
         <section className="card p-5">
-          <h2 className="mb-2 text-sm font-semibold">운세 프로필</h2>
-          {profile ? (
-            <InfoRows
-              rows={[
-                ["닉네임", profile.nickname],
-                [
-                  "성별",
-                  profile.gender === "female"
-                    ? "여성"
-                    : profile.gender === "male"
-                      ? "남성"
-                      : profile.gender,
-                ],
-                [
-                  "생일",
-                  `${profile.birthDateInput} (${profile.calendarType === "lunar" ? `음력${profile.isLeapMonth ? " 윤달" : ""}` : "양력"})`,
-                ],
-                ["태어난 시각", profile.birthTime ?? "모름"],
-                ["MBTI", profile.mbti],
-              ]}
-            />
-          ) : (
-            <Empty>프로필이 없습니다.</Empty>
-          )}
-        </section>
-        <section className="card p-5">
           <h2 className="mb-2 text-sm font-semibold">포인트 · 구독</h2>
           <p className="py-2 text-3xl font-bold tracking-tight">
             {formatNumber(data.balance)}
@@ -185,6 +160,75 @@ export default function UserDetailPage() {
           )}
         </section>
       </div>
+
+      <section className="card mt-4 overflow-hidden">
+        <h2 className="border-b border-line px-5 py-3.5 text-sm font-semibold">
+          운세 프로필 · {profiles.length}개
+        </h2>
+        {profiles.length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  {[
+                    "번호",
+                    "닉네임",
+                    "관계",
+                    "성별",
+                    "생일",
+                    "태어난 시각",
+                    "MBTI",
+                    "등록일",
+                  ].map((label) => (
+                    <th key={label} className="th">
+                      {label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {profiles.map((p) => (
+                  <tr key={p.id}>
+                    <td className="td text-ink-mute">#{p.id}</td>
+                    <td className="td font-semibold">
+                      {p.nickname}
+                      {p.isPrimary && (
+                        <span className="ml-2">
+                          <Badge tone="blue">대표</Badge>
+                        </span>
+                      )}
+                    </td>
+                    <td className="td">
+                      {PROFILE_RELATIONSHIP[p.relationship] ?? p.relationship}
+                    </td>
+                    <td className="td">
+                      {p.gender === "female"
+                        ? "여성"
+                        : p.gender === "male"
+                          ? "남성"
+                          : p.gender}
+                    </td>
+                    <td className="td">
+                      {p.birthDateInput} (
+                      {p.calendarType === "lunar"
+                        ? `음력${p.isLeapMonth ? " 윤달" : ""}`
+                        : "양력"}
+                      )
+                    </td>
+                    <td className="td">{p.birthTime ?? "모름"}</td>
+                    <td className="td">{p.mbti}</td>
+                    <td className="td text-ink-sub">
+                      {formatDateTime(p.createdAt)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <Empty>프로필이 없습니다.</Empty>
+        )}
+      </section>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <PointHistory userId={id} />

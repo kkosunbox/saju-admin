@@ -38,7 +38,7 @@ export default function UsersPage() {
     <>
       <PageHeader
         title="고객"
-        description="회원 번호 · 이메일 · 전화번호 · 닉네임으로 찾습니다."
+        description="회원 번호 · 이메일 · 전화번호 · 모든 프로필의 닉네임으로 찾습니다."
       />
       <div className="card overflow-hidden">
         <form
@@ -82,7 +82,8 @@ export default function UsersPage() {
               <thead>
                 <tr>
                   <th className="th">번호</th>
-                  <th className="th">닉네임</th>
+                  <th className="th">대표 닉네임</th>
+                  <th className="th text-right">프로필</th>
                   <th className="th">상태</th>
                   <th className="th">이메일</th>
                   <th className="th">로그인</th>
@@ -100,6 +101,9 @@ export default function UsersPage() {
                   >
                     <td className="td text-ink-mute">{user.id}</td>
                     <td className="td font-semibold">{user.nickname ?? "-"}</td>
+                    <td className="td text-right">
+                      {formatNumber(user.profileCount)}개
+                    </td>
                     <td className="td">
                       <StatusBadge map={USER_STATUS} value={user.status} />
                     </td>

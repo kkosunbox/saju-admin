@@ -350,3 +350,15 @@ export const AI_STATUS: Record<string, [string, Tone]> = {
 };
 
 export const LIVE_ENVIRONMENTS = ["live", "production"];
+
+export const PROFILE_RELATIONSHIP: Record<string, string> = {
+  self: "본인",
+  lover: "연인",
+  spouse: "배우자",
+  parent: "부모님",
+  child: "자녀",
+  sibling: "형제자매",
+  friend: "친구",
+  work: "직장",
+  other: "기타",
+};
