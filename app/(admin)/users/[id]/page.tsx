@@ -23,6 +23,7 @@ import {
   StatusBadge,
 } from "@/components/ui";
 import { api } from "@/lib/api";
+import type { UserDetail } from "@/lib/types";
 import {
   ENTITLEMENT_SOURCE,
   contentTitle,
@@ -159,6 +160,7 @@ export default function UserDetailPage() {
             <p className="text-sm text-ink-mute">이용 중인 구독 없음</p>
           )}
         </section>
+        <UsageSection usage={data.usage} />
       </div>
 
       <section className="card mt-4 overflow-hidden">
@@ -253,6 +255,53 @@ export default function UserDetailPage() {
         />
       )}
     </>
+  );
+}
+
+function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
+  const { dailyFortune: fortune, consult } = usage;
+  return (
+    <section className="card p-5 lg:col-span-2">
+      <h2 className="mb-2 text-sm font-semibold">이용 현황</h2>
+      <div className="grid gap-x-8 lg:grid-cols-2">
+        <InfoRows
+          rows={[
+            [
+              "오늘의 운세",
+              <Badge key="f" tone={fortune.drawnToday ? "blue" : "gray"}>
+                {fortune.drawnToday ? "오늘 뽑음" : "오늘 안 뽑음"}
+              </Badge>,
+            ],
+            ["마지막으로 뽑은 날", formatDate(fortune.lastDrawnDate)],
+            [
+              `최근 ${fortune.recentDays}일`,
+              `${formatNumber(fortune.recentDrawnDays)}일 뽑음`,
+            ],
+            ["누적", `${formatNumber(fortune.drawnDays)}일 뽑음`],
+          ]}
+        />
+        <InfoRows
+          rows={[
+            [
+              "운알톡",
+              <Badge key="c" tone={consult.used ? "blue" : "gray"}>
+                {consult.used ? "이용함" : "이용 안 함"}
+              </Badge>,
+            ],
+            [
+              "상담",
+              `결제 ${formatNumber(consult.answeredCount)}건 · 무료 미리보기 ${formatNumber(consult.previewCount)}건`,
+            ],
+            ["이어 묻기", `${formatNumber(consult.followUpCount)}회`],
+            ["마지막 이용", formatDateTime(consult.lastUsedAt)],
+          ]}
+        />
+      </div>
+      <p className="mt-2 text-xs text-ink-mute">
+        운알톡은 지금 보관 중인 상담만 셉니다. 고객이 지웠거나 보관 기한(1년)이
+        지난 상담은 빠집니다.
+      </p>
+    </section>
   );
 }
 

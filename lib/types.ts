@@ -71,6 +71,22 @@ export interface UserDetail {
     currentPeriodEnd: string;
     autoRenew: boolean;
   } | null;
+  usage: {
+    dailyFortune: {
+      drawnToday: boolean;
+      lastDrawnDate: string | null;
+      drawnDays: number;
+      recentDays: number;
+      recentDrawnDays: number;
+    };
+    consult: {
+      used: boolean;
+      previewCount: number;
+      answeredCount: number;
+      followUpCount: number;
+      lastUsedAt: string | null;
+    };
+  };
 }
 
 export interface PointTransaction {
