@@ -1,9 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { MobileBar, Sidebar } from "@/components/Sidebar";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { MobileBar, Sidebar, menuLabelOf } from "@/components/Sidebar";
 import { Loading } from "@/components/ui";
+import { api } from "@/lib/api";
 import { useAdmin, useLogout } from "@/lib/auth";
 
 export default function AdminLayout({
@@ -20,6 +21,20 @@ export default function AdminLayout({
   useEffect(() => {
     if (signedOut) router.replace("/login");
   }, [signedOut, router]);
+
+  // 화면(경로)을 열 때마다 조회 기록을 남긴다. 같은 경로를 연달아 두 번 남기지 않고, 실패해도 화면엔 영향 없음.
+  const pathname = usePathname();
+  const loggedPath = useRef<string | null>(null);
+  useEffect(() => {
+    if (!admin || loggedPath.current === pathname) return;
+    loggedPath.current = pathname;
+    api
+      .logAccess({
+        path: `${pathname}${window.location.search}`.slice(0, 500),
+        menu: menuLabelOf(pathname),
+      })
+      .catch(() => {});
+  }, [admin, pathname]);
 
   if (checking || !admin) {
     return (

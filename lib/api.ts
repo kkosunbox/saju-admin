@@ -107,6 +107,9 @@ export const api = {
       body,
     }),
   me: () => request<Admin>("/admin/auth/me"),
+  /** 어떤 화면을 열었는지 서버 DB에만 남깁니다. */
+  logAccess: (body: { path: string; menu?: string }) =>
+    request<void>("/admin/access-logs", { method: "POST", body }),
 
   dashboard: (query: { from?: string; to?: string; includeTest?: boolean }) =>
     request<Dashboard>("/admin/dashboard/summary", { query }),

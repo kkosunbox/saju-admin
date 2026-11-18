@@ -52,6 +52,18 @@ const GROUPS = [
   },
 ];
 
+/** 경로가 속한 사이드바 메뉴 이름. 메뉴에 없는 화면이면 undefined */
+export function menuLabelOf(pathname: string): string | undefined {
+  for (const group of GROUPS) {
+    for (const item of group.items) {
+      if (item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)) {
+        return item.label;
+      }
+    }
+  }
+  return undefined;
+}
+
 function Brand() {
   return (
     <div className="flex items-center gap-2.5">
