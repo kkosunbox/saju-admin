@@ -11,6 +11,7 @@ import type {
   AiUsageSummary,
   Dashboard,
   Entitlement,
+  FirstDayScreens,
   FortuneText,
   Inquiry,
   MemberRetention,
@@ -141,6 +142,8 @@ export const api = {
       method: "POST",
       body,
     }),
+  userFirstDayScreens: (id: number) =>
+    request<FirstDayScreens>(`/admin/users/${id}/first-day-screens`),
   userEntitlements: (id: number) =>
     request<{ items: Entitlement[] }>(`/admin/users/${id}/entitlements`),
 

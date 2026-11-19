@@ -221,6 +221,80 @@ export function contentTitle(
   return contentKey;
 }
 
+const SCREEN_TITLE: Record<string, string> = {
+  "/": "운알톡 (홈)",
+  "/talks": "대화 기록",
+  "/content": "리포트",
+  "/my": "마이",
+  "/today": "오늘의 운세",
+  "/fortune": "운세",
+  "/compatibility": "궁합",
+  "/combined": "종합 풀이",
+  "/consult": "운알톡 상담",
+  "/consult/history": "상담 기록",
+  "/wallet": "포인트 지갑",
+  "/charge": "포인트 충전",
+  "/subscribe": "구독하기",
+  "/subscription": "구독 관리",
+  "/subscription/payments": "구독 결제 내역",
+  "/premium/saju": "상세 사주 해석",
+  "/premium/life": "평생운 · 10년 대운",
+  "/premium/new-year": "신년운세",
+  "/premium/monthly": "월별 상세운세",
+  "/premium/lucky": "길일 찾기",
+  "/premium/owned": "보유 리포트",
+  "/mbti-match": "찰떡 MBTI",
+  "/character": "사주 캐릭터",
+  "/talisman": "오늘의 부적",
+  "/spouse": "미래 배우자 리포트",
+  "/past-life": "전생 테스트",
+  "/pet": "반려동물 궁합",
+  "/child": "우리 아이 사주",
+  "/profile-edit": "프로필 수정",
+  "/profile-setup": "프로필 입력",
+  "/profiles/new": "프로필 추가",
+  "/withdraw": "회원 탈퇴",
+  "/share": "공유",
+  "/inquiry": "1:1 문의",
+  "/onboarding": "온보딩",
+  "/login": "로그인",
+  "/login/email": "이메일 로그인",
+  "/signup": "회원가입",
+  "/signup-terms": "약관 동의",
+};
+
+/** 앱이 남기는 행동 (saju-app trackAction). */
+const ACTION_TITLE: Record<string, string> = {
+  consult_ask_login_required: "운알톡 질문 → 로그인 필요",
+  consult_ask: "운알톡 질문 보냄",
+  fortune_signup_shown: "가입 안내 창 뜸",
+};
+
+/** 행동 이름. 모르는 행동은 그대로 둔다. */
+export function actionTitle(action: string): string {
+  return ACTION_TITLE[action] ?? action;
+}
+
+/** 앱 화면 경로의 이름. 모르는 화면은 빈 문자열 (경로만 보인다). */
+export function screenTitle(path: string): string {
+  const fixed = SCREEN_TITLE[path];
+  if (fixed) return fixed;
+  const [, first, second] = path.split("/");
+  if (first === "premium" && second === "theme") return "테마 운세";
+  if (first === "consult" && second) return "운알톡 상담";
+  if (first === "fortune-history") return "지난 운세";
+  if (first === "profiles" && second) return "프로필 상세";
+  if (first === "category") return "카테고리";
+  if (first === "analysis") return "분석";
+  if (first === "legal") return "약관";
+  if (first === "invite") return "친구 초대 링크";
+  if (first === "p") return "프로필 요청 링크";
+  if (first === "r") return "공유된 풀이";
+  if (first === "g") return "서비스 소개";
+  if (first === "login") return "로그인";
+  return "";
+}
+
 /** 성과 카드. 콘텐츠 키는 앱 상품명, 간식 배너는 배너 제목. */
 export function promoItemTitle(item: string): string {
   if (item === "snack") return "매달 15% 할인받는 간식 구독";

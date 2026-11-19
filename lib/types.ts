@@ -48,6 +48,7 @@ export interface UserDetail {
     isAllowMarketing: boolean;
     lastLoginAt: string | null;
     lastActiveAt: string | null;
+    signedUpAt: string | null;
     mergedIntoUserId: number | null;
     withdrawalReason: string | null;
     createdAt: string;
@@ -105,6 +106,22 @@ export interface PointTransaction {
   idempotencyKey?: string;
   refType?: string | null;
   refId?: string | null;
+}
+
+export interface FirstDayScreens {
+  /** 계정이 생긴 시각 (게스트면 게스트가 된 시각) */
+  createdAt: string;
+  /** 회원이 된 시각, 게스트면 null */
+  signedUpAt: string | null;
+  recording: boolean;
+  views: {
+    path: string;
+    /** 행동 이름, 화면을 연 것이면 null */
+    action: string | null;
+    guest: boolean;
+    platform: string | null;
+    createdAt: string;
+  }[];
 }
 
 export interface Entitlement {

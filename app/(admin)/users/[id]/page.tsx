@@ -9,7 +9,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   Badge,
   Empty,
@@ -35,6 +35,8 @@ import {
   PROVIDER,
   PROFILE_RELATIONSHIP,
   PURCHASE_STATUS,
+  actionTitle,
+  screenTitle,
   STORE,
   SUBSCRIPTION_STATUS,
   USER_STATUS,
@@ -102,7 +104,7 @@ export default function UserDetailPage() {
                   : "-",
               ],
               ["마케팅 수신", user.isAllowMarketing ? "동의" : "미동의"],
-              ["가입", formatDateTime(user.createdAt)],
+              ["가입", formatDateTime(user.signedUpAt ?? user.createdAt)],
               ["마지막 로그인", formatDateTime(user.lastLoginAt)],
               ["마지막 활동", formatDateTime(user.lastActiveAt)],
               ...(user.mergedIntoUserId
@@ -162,6 +164,8 @@ export default function UserDetailPage() {
         </section>
         <UsageSection usage={data.usage} />
       </div>
+
+      <FirstDayScreens userId={id} />
 
       <section className="card mt-4 overflow-hidden">
         <h2 className="border-b border-line px-5 py-3.5 text-sm font-semibold">
@@ -311,11 +315,17 @@ function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
               ],
               [
                 "사주 캐릭터",
-                <FreeContentBadge key="character" used={freeContents.character} />,
+                <FreeContentBadge
+                  key="character"
+                  used={freeContents.character}
+                />,
               ],
               [
                 "전생 테스트",
-                <FreeContentBadge key="past-life" used={freeContents.pastLife} />,
+                <FreeContentBadge
+                  key="past-life"
+                  used={freeContents.pastLife}
+                />,
               ],
               [
                 "오늘의 부적",
@@ -327,6 +337,139 @@ function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
               ],
             ]}
           />
+        </div>
+      )}
+    </section>
+  );
+}
+
+const PLATFORM: Record<string, string> = {
+  ios: "iOS",
+  android: "Android",
+  web: "웹",
+};
+
+/** 첫 기록 뒤 몇 분·시간이 지났는지 (예: +3분, +2시간 5분). */
+function elapsed(from: string, at: string): string {
+  const minutes = Math.max(
+    0,
+    Math.floor((Date.parse(at) - Date.parse(from)) / 60_000),
+  );
+  if (minutes < 60) return `+${minutes}분`;
+  const hours = Math.floor(minutes / 60);
+  return `+${hours}시간${minutes % 60 ? ` ${minutes % 60}분` : ""}`;
+}
+
+function FirstDayScreens({ userId }: { userId: number }) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["user-first-day-screens", userId],
+    queryFn: () => api.userFirstDayScreens(userId),
+  });
+  const views = data?.views ?? [];
+  // 게스트 기록 다음, 회원 기록이 처음 나오는 줄 위에 가입 표시
+  const signupAt = views.findIndex(
+    (view, index) => !view.guest && index > 0 && views[index - 1].guest,
+  );
+  return (
+    <section className="card mt-4 overflow-hidden">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-5 py-3.5">
+        <h2 className="text-sm font-semibold">
+          첫 24시간 화면 이동 · 행동
+          {data ? ` · ${formatNumber(views.length)}건` : ""}
+        </h2>
+        {data && (
+          <>
+            <span className="text-xs text-ink-mute">
+              계정 생성 {formatDateTime(data.createdAt)}
+              {data.signedUpAt
+                ? ` · 회원 가입 ${formatDateTime(data.signedUpAt)}`
+                : ""}
+            </span>
+            {data.recording && <Badge tone="blue">기록 중</Badge>}
+          </>
+        )}
+      </div>
+      {isLoading ? (
+        <Loading />
+      ) : error ? (
+        <div className="p-4">
+          <ErrorBox error={error} />
+        </div>
+      ) : !views.length ? (
+        <Empty>
+          기록이 없습니다. 게스트가 된 뒤 24시간, 회원으로 가입한 뒤 24시간
+          동안만 남깁니다 (이 기능 이전 계정은 비어 있음).
+        </Empty>
+      ) : (
+        <div className="max-h-[28rem] overflow-auto">
+          <table className="w-full">
+            <thead className="sticky top-0 bg-white">
+              <tr>
+                <th className="th">순서</th>
+                <th className="th">시각</th>
+                <th className="th">경과</th>
+                <th className="th">구분</th>
+                <th className="th">화면 · 행동</th>
+                <th className="th">기기</th>
+              </tr>
+            </thead>
+            <tbody>
+              {views.map((view, index) => (
+                <Fragment key={index}>
+                  {index === signupAt && (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="td bg-canvas text-center text-xs font-semibold text-ink-sub"
+                      >
+                        회원 가입
+                        {data?.signedUpAt
+                          ? ` · ${formatDateTime(data.signedUpAt)}`
+                          : ""}
+                      </td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td className="td text-ink-mute">{index + 1}</td>
+                    <td className="td text-ink-sub">
+                      {formatDateTime(view.createdAt)}
+                    </td>
+                    <td className="td text-ink-sub">
+                      {elapsed(views[0].createdAt, view.createdAt)}
+                    </td>
+                    <td className="td">
+                      <Badge tone={view.guest ? "gray" : "blue"}>
+                        {view.guest ? "게스트" : "회원"}
+                      </Badge>
+                    </td>
+                    <td className="td">
+                      {view.action ? (
+                        <span className="mr-2 font-semibold text-[#1e7fc0]">
+                          {actionTitle(view.action)}
+                        </span>
+                      ) : (
+                        screenTitle(view.path) && (
+                          <span className="mr-2 font-semibold">
+                            {screenTitle(view.path)}
+                          </span>
+                        )
+                      )}
+                      <span className="font-mono text-xs text-ink-mute">
+                        {view.action
+                          ? `${screenTitle(view.path) || view.path}에서`
+                          : view.path}
+                      </span>
+                    </td>
+                    <td className="td text-ink-sub">
+                      {view.platform
+                        ? (PLATFORM[view.platform] ?? view.platform)
+                        : "-"}
+                    </td>
+                  </tr>
+                </Fragment>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </section>
