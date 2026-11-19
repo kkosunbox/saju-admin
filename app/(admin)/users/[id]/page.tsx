@@ -298,8 +298,7 @@ function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
         />
       </div>
       <p className="mt-2 text-xs text-ink-mute">
-        운알톡은 지금 보관 중인 상담만 셉니다. 고객이 지웠거나 보관 기한(1년)이
-        지난 상담은 빠집니다.
+        운알톡은 지금 보관 중인 상담만 셉니다. 삭제된 상담은 빠집니다.
       </p>
       {freeContents && (
         <div className="mt-4 border-t border-line pt-4">

@@ -324,6 +324,7 @@ export function DateRange({
     <div className="flex w-full items-center gap-1.5 sm:w-auto">
       <input
         type="date"
+        aria-label="시작일"
         className="input min-w-0 flex-1 sm:flex-none"
         value={from}
         max={to || undefined}
@@ -332,6 +333,7 @@ export function DateRange({
       <span className="text-ink-mute">~</span>
       <input
         type="date"
+        aria-label="종료일"
         className="input min-w-0 flex-1 sm:flex-none"
         value={to}
         min={from || undefined}

@@ -218,6 +218,17 @@ export interface Dashboard {
   pendingInquiries: number;
 }
 
+export type RetentionDay = 1 | 7 | 30;
+
+export interface MemberRetention {
+  cohorts: {
+    day: string;
+    members: number;
+    returned: Record<RetentionDay, number | null>;
+  }[];
+  summary: { day: RetentionDay; eligible: number; returned: number }[];
+}
+
 export interface AiUsageRow {
   id: number;
   userId: number | null;

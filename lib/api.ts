@@ -13,6 +13,7 @@ import type {
   Entitlement,
   FortuneText,
   Inquiry,
+  MemberRetention,
   Page,
   PointTransaction,
   PromoRow,
@@ -113,6 +114,8 @@ export const api = {
 
   dashboard: (query: { from?: string; to?: string; includeTest?: boolean }) =>
     request<Dashboard>("/admin/dashboard/summary", { query }),
+  memberRetention: (query: { from?: string; to?: string }) =>
+    request<MemberRetention>("/admin/dashboard/retention", { query }),
 
   users: (query: {
     page: number;

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import { BarChart } from "@/components/BarChart";
+import { MemberRetention } from "@/components/MemberRetention";
 import {
   DateRange,
   ErrorBox,
@@ -141,6 +142,9 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+      <div className="mt-5">
+        <MemberRetention />
+      </div>
     </>
   );
 }
