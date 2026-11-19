@@ -485,7 +485,7 @@ function FreeContentBadge({
 }) {
   return (
     <Badge tone={used ? "blue" : "gray"}>
-      {drawnToday ? "오늘 뽑음" : used ? "이용함" : "이용 안 함"}
+      {drawnToday ? "오늘 뽑음" : used ? "뽑음" : "뽑기 기록 없음"}
     </Badge>
   );
 }

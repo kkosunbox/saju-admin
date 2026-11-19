@@ -268,6 +268,7 @@ const ACTION_TITLE: Record<string, string> = {
   consult_ask_login_required: "운알톡 질문 → 로그인 필요",
   consult_ask: "운알톡 질문 보냄",
   fortune_signup_shown: "가입 안내 창 뜸",
+  free_content_draw_completed: "뽑기 완료",
 };
 
 /** 행동 이름. 모르는 행동은 그대로 둔다. */
