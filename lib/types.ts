@@ -86,6 +86,12 @@ export interface UserDetail {
       followUpCount: number;
       lastUsedAt: string | null;
     };
+    freeContents?: {
+      mbtiMatch: boolean;
+      character: boolean;
+      pastLife: boolean;
+      talisman: { used: boolean; drawnToday: boolean };
+    };
   };
 }
 

@@ -259,7 +259,7 @@ export default function UserDetailPage() {
 }
 
 function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
-  const { dailyFortune: fortune, consult } = usage;
+  const { dailyFortune: fortune, consult, freeContents } = usage;
   return (
     <section className="card p-5 lg:col-span-2">
       <h2 className="mb-2 text-sm font-semibold">이용 현황</h2>
@@ -301,7 +301,50 @@ function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
         운알톡은 지금 보관 중인 상담만 셉니다. 고객이 지웠거나 보관 기한(1년)이
         지난 상담은 빠집니다.
       </p>
+      {freeContents && (
+        <div className="mt-4 border-t border-line pt-4">
+          <h3 className="text-sm font-semibold">무료 콘텐츠</h3>
+          <InfoRows
+            rows={[
+              [
+                "찰떡 MBTI",
+                <FreeContentBadge key="mbti" used={freeContents.mbtiMatch} />,
+              ],
+              [
+                "사주 캐릭터",
+                <FreeContentBadge key="character" used={freeContents.character} />,
+              ],
+              [
+                "전생 테스트",
+                <FreeContentBadge key="past-life" used={freeContents.pastLife} />,
+              ],
+              [
+                "오늘의 부적",
+                <FreeContentBadge
+                  key="talisman"
+                  used={freeContents.talisman.used}
+                  drawnToday={freeContents.talisman.drawnToday}
+                />,
+              ],
+            ]}
+          />
+        </div>
+      )}
     </section>
+  );
+}
+
+function FreeContentBadge({
+  used,
+  drawnToday,
+}: {
+  used: boolean;
+  drawnToday?: boolean;
+}) {
+  return (
+    <Badge tone={used ? "blue" : "gray"}>
+      {drawnToday ? "오늘 뽑음" : used ? "이용함" : "이용 안 함"}
+    </Badge>
   );
 }
 
