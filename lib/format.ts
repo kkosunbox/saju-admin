@@ -288,6 +288,18 @@ const ACTION_TITLE: Record<string, string> = {
   login_click_google: "로그인 화면 → Google",
   login_click_email: "로그인 화면 → 이메일",
   login_closed: "로그인 화면 닫음",
+  // 게스트가 막힌 순간 로그인 화면 대신 뜨는 가입 시트 (saju-app LoginPromptSheet)
+  login_prompt_shown_consult: "가입 시트 뜸 (운알톡 질문)",
+  login_prompt_shown_unlock: "가입 시트 뜸 (콘텐츠 열기)",
+  login_prompt_shown_charge: "가입 시트 뜸 (알 충전)",
+  login_prompt_shown_attend: "가입 시트 뜸 (출석 체크)",
+  login_prompt_shown_default: "가입 시트 뜸",
+  login_prompt_later: "가입 시트 → 나중에",
+  login_prompt_click_kakao: "가입 시트 → 카카오",
+  login_prompt_click_naver: "가입 시트 → 네이버",
+  login_prompt_click_apple: "가입 시트 → Apple",
+  login_prompt_click_google: "가입 시트 → Google",
+  login_prompt_click_email: "가입 시트 → 이메일",
 };
 
 /** 행동 이름. 모르는 행동은 그대로 둔다. */
