@@ -328,6 +328,13 @@ function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
                 />,
               ],
               [
+                "천생연분 스타",
+                <FreeContentBadge
+                  key="celebrity"
+                  used={freeContents.celebrityMatch ?? false}
+                />,
+              ],
+              [
                 "오늘의 부적",
                 <FreeContentBadge
                   key="talisman"

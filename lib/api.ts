@@ -5,6 +5,7 @@ import type {
   ChangeNoteInput,
   ChangelogPage,
 } from "./changelog";
+import type { Celebrity, CelebrityInput } from "./celebrity";
 import type {
   Admin,
   AiUsageRow,
@@ -208,6 +209,19 @@ export const api = {
     url?: string;
   }) =>
     request<PushCampaign>("/admin/push/campaigns", { method: "POST", body }),
+
+  celebrities: () => request<Celebrity[]>("/admin/celebrities"),
+  createCelebrity: (body: CelebrityInput) =>
+    request<Celebrity>("/admin/celebrities", { method: "POST", body }),
+  updateCelebrity: (id: number, body: CelebrityInput) =>
+    request<Celebrity>(`/admin/celebrities/${id}`, { method: "PATCH", body }),
+  setCelebrityVisible: (id: number, visible: boolean) =>
+    request<Celebrity>(`/admin/celebrities/${id}/visible`, {
+      method: "PATCH",
+      body: { visible },
+    }),
+  deleteCelebrity: (id: number) =>
+    request<{ id: number }>(`/admin/celebrities/${id}`, { method: "DELETE" }),
 
   changelog: (query: { page?: number; limit?: number; area?: ChangeArea }) =>
     request<ChangelogPage>("/admin/changelog", { query }),

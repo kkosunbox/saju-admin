@@ -91,6 +91,8 @@ export interface UserDetail {
       mbtiMatch: boolean;
       character: boolean;
       pastLife: boolean;
+      /** 이 기능 전에 만든 서버 응답에는 없다 */
+      celebrityMatch?: boolean;
       talisman: { used: boolean; drawnToday: boolean };
     };
   };
