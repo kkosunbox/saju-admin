@@ -12,6 +12,7 @@ import {
   Select,
   StatusBadge,
 } from "@/components/ui";
+import { UserInsightsCard } from "@/components/UserInsights";
 import { api } from "@/lib/api";
 import {
   formatDateTime,
@@ -40,7 +41,8 @@ export default function UsersPage() {
         title="고객"
         description="회원 번호 · 이메일 · 전화번호 · 모든 프로필의 닉네임으로 찾습니다."
       />
-      <div className="card overflow-hidden">
+      <UserInsightsCard />
+      <div className="card mt-5 overflow-hidden">
         <form
           className="flex flex-wrap gap-2 border-b border-line p-3"
           onSubmit={(event) => {

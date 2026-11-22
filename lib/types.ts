@@ -237,6 +237,24 @@ export interface Dashboard {
   pendingInquiries: number;
 }
 
+export interface UserInsightsContent {
+  key: string;
+  label: string;
+  /** 한 번이라도 이용한 회원 수 */
+  users: number;
+  /** 무료 컨텐츠의 항목별 수 */
+  items?: { key: string; label: string; users: number }[];
+}
+
+export interface UserInsights {
+  from: string;
+  to: string;
+  computedAt: string;
+  members: number;
+  ages: { label: string; members: number }[];
+  contents: UserInsightsContent[];
+}
+
 export type RetentionDay = 1 | 7 | 30;
 
 export interface MemberRetention {

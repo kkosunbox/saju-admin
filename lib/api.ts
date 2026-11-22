@@ -11,6 +11,7 @@ import type {
   AiUsageRow,
   AiUsageSummary,
   Dashboard,
+  UserInsights,
   Entitlement,
   FirstDayScreens,
   FortuneText,
@@ -119,6 +120,8 @@ export const api = {
   memberRetention: (query: { from?: string; to?: string }) =>
     request<MemberRetention>("/admin/dashboard/retention", { query }),
 
+  userInsights: (query: { from?: string; to?: string }) =>
+    request<UserInsights>("/admin/user-insights", { query }),
   users: (query: {
     page: number;
     limit: number;
