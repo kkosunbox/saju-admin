@@ -1,7 +1,13 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronLeft, ChevronRight, LoaderCircle, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  LoaderCircle,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { errorMessage } from "@/lib/api";
@@ -287,19 +293,27 @@ export function Select({
   placeholder?: string;
 }) {
   const entries = Array.isArray(options) ? options : Object.entries(options);
+  // 브라우저 기본 화살표는 테두리에 붙어서, 숨기고 여백을 둔 화살표를 겹쳐 그린다
   return (
-    <select
-      className="input pr-8"
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-    >
-      {placeholder !== undefined && <option value="">{placeholder}</option>}
-      {entries.map(([key, label]) => (
-        <option key={key} value={key}>
-          {label}
-        </option>
-      ))}
-    </select>
+    <span className="relative inline-flex">
+      <select
+        className="input w-full appearance-none pr-9"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      >
+        {placeholder !== undefined && <option value="">{placeholder}</option>}
+        {entries.map(([key, label]) => (
+          <option key={key} value={key}>
+            {label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        size={15}
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-ink-mute"
+      />
+    </span>
   );
 }
 
