@@ -120,7 +120,7 @@ export const api = {
   memberRetention: (query: { from?: string; to?: string }) =>
     request<MemberRetention>("/admin/dashboard/retention", { query }),
 
-  userInsights: (query: { from?: string; to?: string }) =>
+  userInsights: (query: { from?: string; to?: string; status?: string }) =>
     request<UserInsights>("/admin/user-insights", { query }),
   users: (query: {
     page: number;

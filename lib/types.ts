@@ -250,7 +250,9 @@ export interface UserInsights {
   from: string;
   to: string;
   computedAt: string;
+  /** 대상 전체 (회원 + 게스트) */
   members: number;
+  guests: number;
   ages: { label: string; members: number }[];
   contents: UserInsightsContent[];
 }

@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useId, useState } from "react";
-import { DateRange, QueryState } from "@/components/ui";
+import { DateRange, QueryState, Select } from "@/components/ui";
 import { api } from "@/lib/api";
 import { formatNumber, kstDate } from "@/lib/format";
 
@@ -53,9 +53,10 @@ function RatioRow({
 export function UserInsightsCard() {
   const titleId = useId();
   const [range, setRange] = useState(() => ({ from: kstDate(6), to: kstDate() }));
+  const [status, setStatus] = useState("");
   const { data, isLoading, error } = useQuery({
-    queryKey: ["user-insights", range],
-    queryFn: () => api.userInsights(range),
+    queryKey: ["user-insights", range, status],
+    queryFn: () => api.userInsights({ ...range, status: status || undefined }),
   });
 
   return (
@@ -63,19 +64,29 @@ export function UserInsightsCard() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 id={titleId} className="text-sm font-semibold">
-            가입 회원 분석
+            가입 고객 분석
             {data && (
               <span className="ml-2 font-normal text-ink-sub">
                 {formatNumber(data.members)}명
+                {!status &&
+                  ` (회원 ${formatNumber(data.members - data.guests)} · 게스트 ${formatNumber(data.guests)})`}
               </span>
             )}
           </h2>
           <p className="mt-1 text-sm text-ink-mute">
-            가입일(게스트 승격은 승격일)이 기간 안인 지금 활성 회원. 이용률은 한 번이라도 써 본 회원의 비율입니다.
+            회원은 가입일(게스트 승격은 승격일), 게스트는 게스트가 된 날이 기간 안인 고객. 이용률은 한 번이라도 써 본 사람의 비율입니다.
           </p>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <DateRange from={range.from} to={range.to} onChange={setRange} />
+          <div className="flex flex-wrap justify-end gap-2">
+            <Select
+              value={status}
+              onChange={setStatus}
+              options={{ active: "회원", guest: "게스트" }}
+              placeholder="회원 + 게스트"
+            />
+            <DateRange from={range.from} to={range.to} onChange={setRange} />
+          </div>
           {data && (
             <span className="text-xs text-ink-mute">{computedLabel(data.computedAt)}</span>
           )}
