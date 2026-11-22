@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { BarChart } from "@/components/BarChart";
 import { MemberRetention } from "@/components/MemberRetention";
+import { UserInsightsCard } from "@/components/UserInsights";
 import {
   DateRange,
   ErrorBox,
@@ -142,7 +143,8 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
-      <div className="mt-5">
+      <div className="mt-5 space-y-5">
+        <UserInsightsCard />
         <MemberRetention />
       </div>
     </>
