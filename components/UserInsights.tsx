@@ -52,7 +52,7 @@ function RatioRow({
 /** 가입일 범위로 고른 회원의 나이대와 컨텐츠 이용률 (고객 메뉴 상단). */
 export function UserInsightsCard() {
   const titleId = useId();
-  const [range, setRange] = useState(() => ({ from: kstDate(29), to: kstDate() }));
+  const [range, setRange] = useState(() => ({ from: kstDate(6), to: kstDate() }));
   const { data, isLoading, error } = useQuery({
     queryKey: ["user-insights", range],
     queryFn: () => api.userInsights(range),
