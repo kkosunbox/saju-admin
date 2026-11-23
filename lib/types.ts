@@ -21,6 +21,8 @@ export interface UserRow {
   profileCount: number;
   balance: number;
   providers: string[];
+  /** 앱을 쓴 KST 날짜 수 (회원 2026-11-19 · 게스트 2026-11-23부터 기록) */
+  visitDays: number;
   lastActiveAt: string | null;
   createdAt: string;
 }

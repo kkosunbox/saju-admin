@@ -10,6 +10,7 @@ import {
   Pagination,
   QueryState,
   Select,
+  Badge,
   StatusBadge,
 } from "@/components/ui";
 import { UserInsightsCard } from "@/components/UserInsights";
@@ -102,7 +103,20 @@ export default function UsersPage() {
                     onClick={() => router.push(`/users/${user.id}`)}
                   >
                     <td className="td text-ink-mute">{user.id}</td>
-                    <td className="td font-semibold">{user.nickname ?? "-"}</td>
+                    <td className="td">
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className="font-semibold">
+                          {user.nickname ?? "-"}
+                        </span>
+                        {user.visitDays > 0 && (
+                          <span title="앱을 쓴 날 수 (회원 11/19 · 게스트 11/23부터 집계)">
+                            <Badge tone={visitTone(user.visitDays)}>
+                              방문 {formatNumber(user.visitDays)}일
+                            </Badge>
+                          </span>
+                        )}
+                      </span>
+                    </td>
                     <td className="td text-right">
                       {formatNumber(user.profileCount)}개
                     </td>
@@ -141,4 +155,10 @@ export default function UsersPage() {
       </div>
     </>
   );
+}
+
+function visitTone(days: number) {
+  if (days >= 7) return "green";
+  if (days >= 2) return "blue";
+  return "gray";
 }
