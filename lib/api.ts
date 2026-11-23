@@ -127,6 +127,8 @@ export const api = {
     limit: number;
     status?: string;
     search?: string;
+    minVisitDays?: number;
+    maxVisitDays?: number;
   }) => request<Page<UserRow>>("/admin/users", { query }),
   user: (id: number) => request<UserDetail>(`/admin/users/${id}`),
   updateUserStatus: (id: number, status: string) =>

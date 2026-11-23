@@ -24,15 +24,32 @@ import {
 
 const LIMIT = 20;
 
+// 방문 일수 필터: [라벨, 이상, 이하]
+const VISIT_FILTERS: Record<string, [string, number?, number?]> = {
+  once: ["방문 1일만", 1, 1],
+  "2plus": ["방문 2일 이상", 2],
+  "7plus": ["방문 7일 이상", 7],
+};
+
 export default function UsersPage() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
+  const [visits, setVisits] = useState("");
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
+  const [, minVisitDays, maxVisitDays] = VISIT_FILTERS[visits] ?? [];
   const { data, isLoading, error } = useQuery({
-    queryKey: ["users", page, status, search],
-    queryFn: () => api.users({ page, limit: LIMIT, status, search }),
+    queryKey: ["users", page, status, visits, search],
+    queryFn: () =>
+      api.users({
+        page,
+        limit: LIMIT,
+        status,
+        search,
+        minVisitDays,
+        maxVisitDays,
+      }),
     placeholderData: keepPreviousData,
   });
 
@@ -60,6 +77,17 @@ export default function UsersPage() {
             }}
             options={labelsOf(USER_STATUS)}
             placeholder="전체 상태"
+          />
+          <Select
+            value={visits}
+            onChange={(value) => {
+              setVisits(value);
+              setPage(1);
+            }}
+            options={Object.entries(VISIT_FILTERS).map(
+              ([key, [label]]): [string, string] => [key, label],
+            )}
+            placeholder="전체 방문"
           />
           <div className="relative min-w-0 flex-1 sm:flex-none">
             <Search
