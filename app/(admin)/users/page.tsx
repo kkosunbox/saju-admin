@@ -1,6 +1,7 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,10 +27,13 @@ const LIMIT = 20;
 
 // 방문 일수 필터: [라벨, 이상, 이하]
 const VISIT_FILTERS: Record<string, [string, number?, number?]> = {
-  once: ["방문 1일만", 1, 1],
-  "2plus": ["방문 2일 이상", 2],
-  "7plus": ["방문 7일 이상", 7],
+  once: ["방문 1일", 1, 1],
+  "2plus": ["방문 2일+", 2],
+  "7plus": ["방문 7일+", 7],
 };
+const visitOptions = Object.entries(VISIT_FILTERS).map(
+  ([key, [label]]) => [key, label] as const,
+);
 
 export default function UsersPage() {
   const router = useRouter();
@@ -78,17 +82,6 @@ export default function UsersPage() {
             options={labelsOf(USER_STATUS)}
             placeholder="전체 상태"
           />
-          <Select
-            value={visits}
-            onChange={(value) => {
-              setVisits(value);
-              setPage(1);
-            }}
-            options={Object.entries(VISIT_FILTERS).map(
-              ([key, [label]]): [string, string] => [key, label],
-            )}
-            placeholder="전체 방문"
-          />
           <div className="relative min-w-0 flex-1 sm:flex-none">
             <Search
               size={15}
@@ -102,6 +95,27 @@ export default function UsersPage() {
             />
           </div>
           <button className="btn-outline">검색</button>
+          <div className="flex w-full flex-wrap items-center gap-1.5 sm:ml-auto sm:w-auto">
+            {[["", "전체"] as const, ...visitOptions].map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={visits === key}
+                onClick={() => {
+                  setVisits(key);
+                  setPage(1);
+                }}
+                className={clsx(
+                  "inline-flex h-7 items-center rounded-md border px-2.5 text-xs font-semibold",
+                  visits === key
+                    ? "border-navy bg-navy text-white"
+                    : "border-line bg-white text-ink-sub hover:bg-canvas",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </form>
         <QueryState
           isLoading={isLoading}
