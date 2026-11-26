@@ -14,6 +14,7 @@ import {
   Pagination,
   QueryState,
 } from "@/components/ui";
+import { SortTh, sortQuery, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import { formatDateTime, INQUIRY_CATEGORY } from "@/lib/format";
 
@@ -22,9 +23,11 @@ const LIMIT = 20;
 export default function InquiriesPage() {
   const [page, setPage] = useState(1);
   const [openId, setOpenId] = useState<number | null>(null);
+  const sorting = useSort(() => setPage(1));
   const { data, isLoading, error } = useQuery({
-    queryKey: ["inquiries", page],
-    queryFn: () => api.inquiries({ page, limit: LIMIT }),
+    queryKey: ["inquiries", page, sorting.sort],
+    queryFn: () =>
+      api.inquiries({ page, limit: LIMIT, ...sortQuery(sorting.sort) }),
     placeholderData: keepPreviousData,
   });
 
@@ -44,8 +47,8 @@ export default function InquiriesPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="th">번호</th>
-                  <th className="th">접수</th>
+                  <SortTh label="번호" sortKey="id" {...sorting} />
+                  <SortTh label="접수" sortKey="createdAt" {...sorting} />
                   <th className="th">분류</th>
                   <th className="th">내용</th>
                   <th className="th">회원</th>

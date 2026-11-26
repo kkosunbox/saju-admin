@@ -10,6 +10,7 @@ import {
   PageHeader,
   QueryState,
 } from "@/components/ui";
+import { SortTh, sortRows, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import { CHANGELOG_KEY } from "@/lib/changelog";
 import { formatDateTime } from "@/lib/format";
@@ -21,8 +22,13 @@ export default function SettingsPage() {
     queryFn: api.settings,
   });
   const [editing, setEditing] = useState<Setting | "new" | null>(null);
-  const settings = (data?.settings ?? []).filter(
-    (setting) => setting.key !== CHANGELOG_KEY,
+  const sorting = useSort();
+  const settings = sortRows(
+    (data?.settings ?? []).filter((setting) => setting.key !== CHANGELOG_KEY),
+    sorting.sort,
+    {
+      updatedAt: (setting) => setting.updatedAt,
+    },
   );
 
   return (
@@ -49,7 +55,7 @@ export default function SettingsPage() {
                   <th className="th">키</th>
                   <th className="th">값</th>
                   <th className="th w-full">설명</th>
-                  <th className="th">수정</th>
+                  <SortTh label="수정" sortKey="updatedAt" {...sorting} />
                 </tr>
               </thead>
               <tbody>

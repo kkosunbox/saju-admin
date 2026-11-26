@@ -12,6 +12,7 @@ import {
   QueryState,
   Select,
 } from "@/components/ui";
+import { SortTh, sortRows, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import { formatDateTime, FORTUNE_CATEGORY } from "@/lib/format";
 import type { FortuneText } from "@/lib/types";
@@ -91,10 +92,16 @@ export default function FortuneTextsPage() {
     queryFn: () => api.texts({ section: activeSection }),
     enabled: !!activeSection,
   });
-  const rows = (texts.data?.list ?? []).filter(
-    (row) => showOff || row.isActive,
-  );
   const keys = sections.data?.[activeSection] ?? [];
+  const sorting = useSort();
+  const rows = sortRows(
+    (texts.data?.list ?? []).filter((row) => showOff || row.isActive),
+    sorting.sort,
+    {
+      id: (row) => row.id,
+      updatedAt: (row) => row.updatedAt,
+    },
+  );
 
   return (
     <>
@@ -147,15 +154,13 @@ export default function FortuneTextsPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="th">번호</th>
+                  <SortTh label="번호" sortKey="id" {...sorting} />
                   {keys.map((key) => (
-                    <th key={key} className="th">
-                      {KEY_LABEL[key] ?? key}
-                    </th>
+                    <th key={key} className="th">{KEY_LABEL[key] ?? key}</th>
                   ))}
                   <th className="th w-full">문장</th>
                   <th className="th">상태</th>
-                  <th className="th">수정</th>
+                  <SortTh label="수정" sortKey="updatedAt" {...sorting} />
                 </tr>
               </thead>
               <tbody>

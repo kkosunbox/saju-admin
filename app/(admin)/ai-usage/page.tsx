@@ -17,6 +17,7 @@ import {
   Stat,
   StatusBadge,
 } from "@/components/ui";
+import { type Sort, SortTh, sortQuery, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import {
   AI_FEATURE,
@@ -48,15 +49,22 @@ export default function AiUsagePage() {
     queryKey: ["ai-summary", filter],
     queryFn: () => api.aiUsageSummary(filter),
   });
+  const sorting = useSort(() => setPage(1));
   const calls = useQuery({
-    queryKey: ["ai-usage", filter, page],
-    queryFn: () => api.aiUsage({ ...filter, page, limit: LIMIT }),
+    queryKey: ["ai-usage", filter, page, sorting.sort],
+    queryFn: () =>
+      api.aiUsage({
+        ...filter,
+        page,
+        limit: LIMIT,
+        ...sortQuery(sorting.sort),
+      }),
     placeholderData: keepPreviousData,
   });
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const groups = useMemo(
-    () => groupUsageCalls(calls.data?.items ?? []),
-    [calls.data?.items],
+    () => groupUsageCalls(calls.data?.items ?? [], sorting.sort),
+    [calls.data?.items, sorting.sort],
   );
   const hasGroups = groups.some((group) => group.rows.length > 1);
 
@@ -206,16 +214,36 @@ export default function AiUsagePage() {
               <thead>
                 <tr>
                   {hasGroups && <th className="th w-8" />}
-                  <th className="th">일시</th>
+                  <SortTh label="일시" sortKey="createdAt" {...sorting} />
                   <th className="th">회원</th>
                   <th className="th">기능</th>
                   <th className="th">콘텐츠 · 단계</th>
                   <th className="th">모델</th>
                   <th className="th">결과</th>
-                  <th className="th text-right">입력 / 출력</th>
-                  <th className="th text-right">캐시 읽기</th>
-                  <th className="th text-right">걸린 시간</th>
-                  <th className="th text-right">비용</th>
+                  <SortTh
+                    label="입력 / 출력"
+                    sortKey="inputTokens"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="캐시 읽기"
+                    sortKey="cacheReadTokens"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="걸린 시간"
+                    sortKey="latencyMs"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="비용"
+                    sortKey="costKrw"
+                    align="right"
+                    {...sorting}
+                  />
                 </tr>
               </thead>
               <tbody>
@@ -277,7 +305,8 @@ function nextDay(day: string): string {
 
 type UsageGroup = { key: string; rows: AiUsageRow[] };
 
-function groupUsageCalls(items: AiUsageRow[]): UsageGroup[] {
+/** 정렬 중이면 서버가 준 순서(묶음의 첫 호출 자리)를, 아니면 최신순을 따른다. */
+function groupUsageCalls(items: AiUsageRow[], sort: Sort): UsageGroup[] {
   const map = new Map<string, AiUsageRow[]>();
   for (const row of items) {
     const key =
@@ -290,12 +319,14 @@ function groupUsageCalls(items: AiUsageRow[]): UsageGroup[] {
     if (list) list.push(row);
     else map.set(key, [row]);
   }
-  return [...map.entries()]
-    .map(([key, rows]) => ({
-      key,
-      rows: rows.sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    }))
-    .sort((a, b) => b.rows[0].createdAt.localeCompare(a.rows[0].createdAt));
+  const groups = [...map.entries()].map(([key, rows]) => ({
+    key,
+    rows: [...rows].sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
+  }));
+  if (sort) return groups;
+  return groups.sort((a, b) =>
+    b.rows[0].createdAt.localeCompare(a.rows[0].createdAt),
+  );
 }
 
 function CallCells({ row }: { row: AiUsageRow }) {

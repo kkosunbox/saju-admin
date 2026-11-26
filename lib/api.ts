@@ -43,6 +43,8 @@ export class ApiError extends Error {
 }
 
 type Query = Record<string, string | number | boolean | undefined | null>;
+/** 목록 정렬 (없으면 서버 기본 최신순). */
+type SortQuery = { sort?: string; order?: "asc" | "desc" };
 
 async function request<T>(
   path: string,
@@ -129,7 +131,7 @@ export const api = {
     search?: string;
     minVisitDays?: number;
     maxVisitDays?: number;
-  }) => request<Page<UserRow>>("/admin/users", { query }),
+  } & SortQuery) => request<Page<UserRow>>("/admin/users", { query }),
   user: (id: number) => request<UserDetail>(`/admin/users/${id}`),
   updateUserStatus: (id: number, status: string) =>
     request<boolean>(`/admin/users/${id}/status`, {
@@ -169,7 +171,7 @@ export const api = {
       refundedAt: string;
     }>(`/admin/subscriptions/${id}/refund`, { method: "POST", body }),
 
-  inquiries: (query: { page: number; limit: number }) =>
+  inquiries: (query: { page: number; limit: number } & SortQuery) =>
     request<Page<Inquiry>>("/admin/inquiries", { query }),
   inquiry: (id: number) => request<Inquiry>(`/admin/inquiries/${id}`),
 
@@ -201,7 +203,7 @@ export const api = {
     kind: PushCampaignKind;
     userIds?: number[];
   }) => request<PushAudience>("/admin/push/audience", { method: "POST", body }),
-  pushCampaigns: (query: { page: number; limit: number }) =>
+  pushCampaigns: (query: { page: number; limit: number } & SortQuery) =>
     request<Page<PushCampaign>>("/admin/push/campaigns", { query }),
   pushCampaign: (id: number) =>
     request<PushCampaign>(`/admin/push/campaigns/${id}`),

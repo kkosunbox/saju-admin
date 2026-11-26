@@ -21,6 +21,7 @@ import {
   Select,
   StatusBadge,
 } from "@/components/ui";
+import { SortTh, sortQuery, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import type { Subscription } from "@/lib/types";
 import {
@@ -41,9 +42,16 @@ export default function SubscriptionsPage() {
     setFilter((current) => ({ ...current, ...patch }));
     setPage(1);
   };
+  const sorting = useSort(() => setPage(1));
   const { data, isLoading, error } = useQuery({
-    queryKey: ["subscriptions", page, filter],
-    queryFn: () => api.subscriptions({ ...filter, page, limit: LIMIT }),
+    queryKey: ["subscriptions", page, filter, sorting.sort],
+    queryFn: () =>
+      api.subscriptions({
+        ...filter,
+        page,
+        limit: LIMIT,
+        ...sortQuery(sorting.sort),
+      }),
     placeholderData: keepPreviousData,
   });
 
@@ -86,17 +94,36 @@ export default function SubscriptionsPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="th">번호</th>
+                  <SortTh label="번호" sortKey="id" {...sorting} />
                   <th className="th">회원</th>
                   <th className="th">스토어</th>
                   <th className="th">상품</th>
                   <th className="th">상태</th>
-                  <th className="th text-right">금액</th>
-                  <th className="th text-right">회차</th>
-                  <th className="th">이번 기간</th>
-                  <th className="th">다음 결제</th>
+                  <SortTh
+                    label="금액"
+                    sortKey="priceKrw"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="회차"
+                    sortKey="periodCount"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="이번 기간"
+                    sortKey="currentPeriodEnd"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="다음 결제"
+                    sortKey="nextChargeAt"
+                    first="asc"
+                    {...sorting}
+                  />
                   <th className="th">카드</th>
-                  <th className="th">시작</th>
+                  <SortTh label="시작" sortKey="createdAt" {...sorting} />
                   <th className="th" />
                 </tr>
               </thead>

@@ -21,6 +21,7 @@ import {
   QueryState,
   StatusBadge,
 } from "@/components/ui";
+import { SortTh, sortQuery, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import {
   PUSH_DESTINATIONS,
@@ -175,9 +176,11 @@ function PushPageInner() {
       }),
     enabled: target === "all" || userIds.length > 0,
   });
+  const sorting = useSort(() => setPage(1));
   const history = useQuery({
-    queryKey: ["push-campaigns", page],
-    queryFn: () => api.pushCampaigns({ page, limit: LIMIT }),
+    queryKey: ["push-campaigns", page, sorting.sort],
+    queryFn: () =>
+      api.pushCampaigns({ page, limit: LIMIT, ...sortQuery(sorting.sort) }),
     placeholderData: keepPreviousData,
   });
 
@@ -371,12 +374,17 @@ function PushPageInner() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="th">보낸 시각</th>
+                  <SortTh label="보낸 시각" sortKey="createdAt" {...sorting} />
                   <th className="th">종류</th>
                   <th className="th">대상</th>
                   <th className="th">내용</th>
                   <th className="th">상태</th>
-                  <th className="th text-right">발송</th>
+                  <SortTh
+                    label="발송"
+                    sortKey="sent"
+                    align="right"
+                    {...sorting}
+                  />
                 </tr>
               </thead>
               <tbody>

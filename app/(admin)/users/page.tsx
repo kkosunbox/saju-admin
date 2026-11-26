@@ -14,6 +14,7 @@ import {
   Badge,
   StatusBadge,
 } from "@/components/ui";
+import { SortTh, sortQuery, useSort } from "@/components/sort";
 import { UserInsightsCard } from "@/components/UserInsights";
 import { api } from "@/lib/api";
 import {
@@ -43,8 +44,9 @@ export default function UsersPage() {
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
   const [, minVisitDays, maxVisitDays] = VISIT_FILTERS[visits] ?? [];
+  const sorting = useSort(() => setPage(1));
   const { data, isLoading, error } = useQuery({
-    queryKey: ["users", page, status, visits, search],
+    queryKey: ["users", page, status, visits, search, sorting.sort],
     queryFn: () =>
       api.users({
         page,
@@ -53,6 +55,7 @@ export default function UsersPage() {
         search,
         minVisitDays,
         maxVisitDays,
+        ...sortQuery(sorting.sort),
       }),
     placeholderData: keepPreviousData,
   });
@@ -126,15 +129,29 @@ export default function UsersPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="th">번호</th>
+                  <SortTh label="번호" sortKey="id" {...sorting} />
                   <th className="th">대표 닉네임</th>
-                  <th className="th text-right">프로필</th>
+                  <SortTh
+                    label="프로필"
+                    sortKey="profileCount"
+                    align="right"
+                    {...sorting}
+                  />
                   <th className="th">상태</th>
                   <th className="th">이메일</th>
                   <th className="th">로그인</th>
-                  <th className="th text-right">포인트</th>
-                  <th className="th">마지막 활동</th>
-                  <th className="th">가입</th>
+                  <SortTh
+                    label="포인트"
+                    sortKey="balance"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="마지막 활동"
+                    sortKey="lastActiveAt"
+                    {...sorting}
+                  />
+                  <SortTh label="가입" sortKey="createdAt" {...sorting} />
                 </tr>
               </thead>
               <tbody>

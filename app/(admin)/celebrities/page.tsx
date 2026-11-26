@@ -19,6 +19,7 @@ import {
   type CelebrityGender,
   type CelebrityInput,
 } from "@/lib/celebrity";
+import { SortTh, sortRows, useSort } from "@/components/sort";
 
 type GenderFilter = "all" | CelebrityGender;
 
@@ -42,14 +43,18 @@ export default function CelebritiesPage() {
     }),
     [all],
   );
+  const sorting = useSort();
   const rows = useMemo(() => {
     const word = search.trim();
-    return all.filter(
+    const matched = all.filter(
       (c) =>
         (filter === "all" || c.gender === filter) &&
         (!word || c.name.includes(word) || c.description.includes(word)),
     );
-  }, [all, filter, search]);
+    return sortRows(matched, sorting.sort, {
+      birthDate: (c) => c.birthDate,
+    });
+  }, [all, filter, search, sorting.sort]);
 
   const done = async () => {
     setEditing(null);
@@ -142,7 +147,13 @@ export default function CelebritiesPage() {
                 <th className="px-4 py-3 font-semibold">이름</th>
                 <th className="px-4 py-3 font-semibold">설명</th>
                 <th className="px-4 py-3 font-semibold">성별</th>
-                <th className="px-4 py-3 font-semibold">양력 생일</th>
+                <SortTh
+                  label="양력 생일"
+                  sortKey="birthDate"
+                  bare
+                  className="px-4 py-3 font-semibold"
+                  {...sorting}
+                />
                 <th className="px-4 py-3 font-semibold">앱 노출</th>
                 <th className="px-4 py-3" />
               </tr>

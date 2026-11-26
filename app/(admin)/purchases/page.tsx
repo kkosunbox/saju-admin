@@ -13,6 +13,7 @@ import {
   Select,
   StatusBadge,
 } from "@/components/ui";
+import { SortTh, sortQuery, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import {
   formatDateTime,
@@ -40,9 +41,16 @@ export default function PurchasesPage() {
     setFilter((current) => ({ ...current, ...patch }));
     setPage(1);
   };
+  const sorting = useSort(() => setPage(1));
   const { data, isLoading, error } = useQuery({
-    queryKey: ["purchases", page, filter],
-    queryFn: () => api.purchases({ ...filter, page, limit: LIMIT }),
+    queryKey: ["purchases", page, filter, sorting.sort],
+    queryFn: () =>
+      api.purchases({
+        ...filter,
+        page,
+        limit: LIMIT,
+        ...sortQuery(sorting.sort),
+      }),
     placeholderData: keepPreviousData,
   });
 
@@ -100,15 +108,29 @@ export default function PurchasesPage() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="th">번호</th>
-                  <th className="th">요청 일시</th>
+                  <SortTh label="번호" sortKey="id" {...sorting} />
+                  <SortTh label="요청 일시" sortKey="createdAt" {...sorting} />
                   <th className="th">회원</th>
                   <th className="th">스토어</th>
                   <th className="th">상품</th>
                   <th className="th">상태</th>
-                  <th className="th text-right">금액</th>
-                  <th className="th text-right">포인트</th>
-                  <th className="th">완료 · 환불</th>
+                  <SortTh
+                    label="금액"
+                    sortKey="amountKrw"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="포인트"
+                    sortKey="points"
+                    align="right"
+                    {...sorting}
+                  />
+                  <SortTh
+                    label="완료 · 환불"
+                    sortKey="completedAt"
+                    {...sorting}
+                  />
                   <th className="th">거래 번호</th>
                 </tr>
               </thead>

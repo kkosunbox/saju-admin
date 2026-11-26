@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { DateRange, PageHeader, QueryState, Select } from "@/components/ui";
+import { SortTh, sortRows, useSort } from "@/components/sort";
 import { api } from "@/lib/api";
 import {
   formatNumber,
@@ -35,6 +36,20 @@ export default function PromoPage() {
           (screen) => [screen, promoScreenTitle(screen)] as [string, string],
         ),
     [all.data],
+  );
+
+  const sorting = useSort();
+  const rows = useMemo(
+    () =>
+      sortRows(data?.rows ?? [], sorting.sort, {
+        views: (row) => row.views,
+        clicks: (row) => row.clicks,
+        clickRate: (row) => row.clickRate,
+        clickers: (row) => row.clickers,
+        converted: (row) => row.converted,
+        conversionRate: (row) => row.conversionRate,
+      }),
+    [data, sorting.sort],
   );
 
   return (
@@ -70,16 +85,28 @@ export default function PromoPage() {
                 <tr>
                   <th className="th">화면</th>
                   <th className="th">카드</th>
-                  <th className="th text-right">노출</th>
-                  <th className="th text-right">클릭</th>
-                  <th className="th text-right">클릭률</th>
-                  <th className="th text-right">클릭한 사람</th>
-                  <th className="th text-right">구매 · 이용</th>
-                  <th className="th text-right">전환율</th>
+                  {(
+                    [
+                      ["노출", "views"],
+                      ["클릭", "clicks"],
+                      ["클릭률", "clickRate"],
+                      ["클릭한 사람", "clickers"],
+                      ["구매 · 이용", "converted"],
+                      ["전환율", "conversionRate"],
+                    ] as const
+                  ).map(([label, key]) => (
+                    <SortTh
+                      key={key}
+                      label={label}
+                      sortKey={key}
+                      align="right"
+                      {...sorting}
+                    />
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {data?.rows.map((row) => (
+                {rows.map((row) => (
                   <tr key={`${row.screen}|${row.item}`}>
                     <td className="td text-ink-sub" title={row.screen}>
                       {promoScreenTitle(row.screen)}
