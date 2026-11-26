@@ -147,6 +147,7 @@ const CONTENT_TITLE: Record<string, string> = {
   spouse: "미래 배우자 리포트",
   "bundle:life": "인생 패키지",
   consult: "운알톡",
+  "day-stem": "MBTI × 일간",
 };
 
 const THEME_TITLE: Record<string, string> = {
@@ -248,6 +249,8 @@ const SCREEN_TITLE: Record<string, string> = {
   "/talisman": "오늘의 부적",
   "/spouse": "미래 배우자 리포트",
   "/past-life": "전생 테스트",
+  "/day-stem": "MBTI × 일간",
+  "/analysis/tarot": "오늘의 타로",
   "/pet": "반려동물 궁합",
   "/child": "우리 아이 사주",
   "/profile-edit": "프로필 수정",
@@ -341,6 +344,7 @@ const PROMO_SCREEN: Record<string, string> = {
   character: "나의 사주 캐릭터",
   past_life: "전생 테스트",
   mbti_match: "찰떡 MBTI",
+  "day-stem": "MBTI × 일간",
   combined: "오늘의 운세 · 종합풀이",
   tarot: "타로",
   pet: "반려동물 궁합",

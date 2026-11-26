@@ -95,6 +95,10 @@ export interface UserDetail {
       pastLife: boolean;
       /** 이 기능 전에 만든 서버 응답에는 없다 */
       celebrityMatch?: boolean;
+      /** 이 기능 전에 만든 서버 응답에는 없다 */
+      dayStem?: boolean;
+      /** 이 기능 전에 만든 서버 응답에는 없다 */
+      tarot?: { used: boolean; drawnToday: boolean };
       talisman: { used: boolean; drawnToday: boolean };
     };
   };

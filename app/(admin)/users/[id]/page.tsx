@@ -335,6 +335,21 @@ function UsageSection({ usage }: { usage: UserDetail["usage"] }) {
                 />,
               ],
               [
+                "MBTI × 일간",
+                <FreeContentBadge
+                  key="day-stem"
+                  used={freeContents.dayStem ?? false}
+                />,
+              ],
+              [
+                "오늘의 타로",
+                <FreeContentBadge
+                  key="tarot"
+                  used={freeContents.tarot?.used ?? false}
+                  drawnToday={freeContents.tarot?.drawnToday}
+                />,
+              ],
+              [
                 "오늘의 부적",
                 <FreeContentBadge
                   key="talisman"
