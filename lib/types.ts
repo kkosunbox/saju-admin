@@ -260,6 +260,7 @@ export interface UserInsights {
   members: number;
   guests: number;
   ages: { label: string; members: number }[];
+  mbti?: { label: string; members: number }[];
   contents: UserInsightsContent[];
 }
 
