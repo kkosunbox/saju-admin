@@ -233,7 +233,13 @@ export interface Inquiry {
 export type CampaignChannel =
   | "instagram_profile"
   | "youtube_profile"
-  | "instagram_ads";
+  | "instagram_ads"
+  | "google_search"
+  | "naver_search"
+  | "other_search"
+  | "google_ads"
+  | "other_referral"
+  | "direct_unknown";
 
 export type CampaignVisitDay = {
   day: string;

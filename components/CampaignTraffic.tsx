@@ -8,6 +8,12 @@ const CHANNELS = [
   ["instagram_profile", "인스타그램 프로필"],
   ["youtube_profile", "유튜브 프로필"],
   ["instagram_ads", "인스타그램 광고"],
+  ["google_search", "구글 검색"],
+  ["naver_search", "네이버 검색"],
+  ["other_search", "기타 검색"],
+  ["google_ads", "구글 광고"],
+  ["other_referral", "기타 외부 링크"],
+  ["direct_unknown", "직접·출처 미확인"],
 ] as const satisfies ReadonlyArray<readonly [CampaignChannel, string]>;
 
 export function CampaignTraffic({
@@ -35,11 +41,12 @@ export function CampaignTraffic({
         웹 유입 채널
       </h2>
       <p className="mt-1 text-sm text-ink-mute">
-        대시보드 기간 기준. 태그가 있는 링크의 방문을 세며, 같은 탭에서 같은 채널로 30분 안에 다시 들어오면 1건으로 집계합니다.
+        링크 태그와 브라우저가 전달하는 이전 사이트 정보를 기준으로 분류합니다.
+        같은 탭에서 같은 채널로 30분 안에 다시 들어오면 1건으로 집계합니다.
       </p>
       <QueryState isLoading={isLoading} error={error} isEmpty={false}>
         <div className="mt-4 max-h-96 overflow-auto rounded-lg border border-line">
-          <table className="w-full min-w-[30rem] text-sm tabular-nums">
+          <table className="w-full text-sm whitespace-nowrap tabular-nums">
             <caption className="sr-only">채널별 기간 합계와 날짜별 방문 건수</caption>
             <thead className="sticky top-0 bg-canvas text-xs text-ink-sub">
               <tr>
