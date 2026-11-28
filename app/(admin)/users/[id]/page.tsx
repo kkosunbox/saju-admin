@@ -43,6 +43,12 @@ import {
 } from "@/lib/format";
 
 const POINT_LIMIT = 30;
+const DEVICE_PLATFORM = {
+  ios: "iOS 앱",
+  android: "Android 앱",
+  web: "웹 브라우저",
+  pwa: "설치형 웹앱",
+};
 
 export default function UserDetailPage() {
   const id = Number(useParams<{ id: string }>().id);
@@ -54,7 +60,7 @@ export default function UserDetailPage() {
 
   if (isLoading) return <Loading />;
   if (error || !data) return <ErrorBox error={error} />;
-  const { user, profile, profiles } = data;
+  const { user, profile, profiles, appDevices = [] } = data;
 
   return (
     <>
@@ -164,6 +170,59 @@ export default function UserDetailPage() {
         </section>
         <UsageSection usage={data.usage} />
       </div>
+
+      <section className="card mt-4 overflow-hidden">
+        <h2 className="border-b border-line px-5 py-3.5 text-sm font-semibold">
+          최근 접속 환경
+        </h2>
+        {appDevices.length ? (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  {[
+                    "접속 방식",
+                    "기기 모델",
+                    "운영체제",
+                    "앱 버전 / 브라우저",
+                    "마지막 확인",
+                  ].map((label) => (
+                    <th key={label} scope="col" className="th">
+                      {label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {appDevices.map((device, index) => (
+                  <tr key={device.platform}>
+                    <td className="td font-semibold">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {DEVICE_PLATFORM[device.platform]}
+                        {index === 0 && <Badge tone="blue">가장 최근</Badge>}
+                      </div>
+                    </td>
+                    <td className="td">{device.modelName ?? "-"}</td>
+                    <td className="td">
+                      {[device.osName, device.osVersion]
+                        .filter(Boolean)
+                        .join(" ") || "-"}
+                    </td>
+                    <td className="td">
+                      {device.appVersion ?? device.browser ?? "-"}
+                    </td>
+                    <td className="td text-ink-sub">
+                      {formatDateTime(device.reportedAt)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <Empty>기록된 접속 환경이 없습니다.</Empty>
+        )}
+      </section>
 
       <FirstDayScreens userId={id} />
 

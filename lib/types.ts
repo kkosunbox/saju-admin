@@ -42,6 +42,15 @@ export interface FortuneProfile {
 }
 
 export interface UserDetail {
+  appDevices?: {
+    platform: "ios" | "android" | "web" | "pwa";
+    modelName: string | null;
+    osName: string | null;
+    osVersion: string | null;
+    appVersion: string | null;
+    browser: string | null;
+    reportedAt: string;
+  }[];
   user: {
     id: number;
     email: string | null;
