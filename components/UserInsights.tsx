@@ -52,36 +52,39 @@ function RatioRow({
 
 function MbtiDistribution({
   entries,
-  total,
 }: {
   entries: NonNullable<UserInsights["mbti"]>;
-  total: number;
 }) {
   const types = entries.filter(({ label }) => label !== "미입력");
   const missing = entries.find(({ label }) => label === "미입력");
+  const total = entries.reduce((sum, { members }) => sum + members, 0);
 
   return (
     <div className="@container mt-5 border-t border-line pt-4">
       <h3 className="mb-2 text-xs font-medium text-ink-sub">
-        MBTI 분포 (대표 프로필 직접 입력 기준)
+        MBTI 분포 (대표 프로필이 있는 고객 기준)
       </h3>
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line bg-line @xs:grid-cols-4">
-        {types.map(({ label, members }) => (
-          <div key={label} className="min-w-0 bg-white px-2 py-1.5">
-            <dt className="text-xs font-semibold">{label}</dt>
-            <dd className="mt-0.5 flex flex-wrap items-baseline gap-x-1 text-xs tabular-nums">
-              <span className="font-medium">{ratio(members, total)}</span>
-              <span className="text-ink-mute">{formatNumber(members)}명</span>
-            </dd>
-          </div>
-        ))}
-      </dl>
-      {missing && (
+      {total ? (
+        <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line bg-line @xs:grid-cols-4">
+          {types.map(({ label, members }) => (
+            <div key={label} className="min-w-0 bg-white px-2 py-1.5">
+              <dt className="text-xs font-semibold">{label}</dt>
+              <dd className="mt-0.5 flex flex-wrap items-baseline gap-x-1 text-xs tabular-nums">
+                <span className="font-medium">{ratio(members, total)}</span>
+                <span className="text-ink-mute">{formatNumber(members)}명</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p className="text-xs text-ink-mute">대표 프로필을 등록한 고객이 없습니다.</p>
+      )}
+      {total > 0 && missing && (
         <p className="mt-2 text-xs text-ink-mute">
           <span className="font-medium text-ink-sub tabular-nums">
             미입력 {ratio(missing.members, total)} · {formatNumber(missing.members)}명
           </span>
-          {" (사주 추정 및 대표 프로필 없음 포함)"}
+          {" (사주 추정 포함)"}
         </p>
       )}
     </div>
@@ -143,7 +146,7 @@ export function UserInsightsCard() {
                   <RatioRow key={label} label={label} count={members} total={data.members} />
                 ))}
               </ul>
-              {data.mbti && <MbtiDistribution entries={data.mbti} total={data.members} />}
+              {data.mbti && <MbtiDistribution entries={data.mbti} />}
             </div>
             <div>
               <h3 className="mb-3 text-xs font-medium text-ink-sub">컨텐츠 이용률</h3>
