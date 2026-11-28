@@ -221,6 +221,17 @@ export interface Inquiry {
   user: { id: number; email: string | null; status: UserStatus } | null;
 }
 
+export type CampaignChannel =
+  | "instagram_profile"
+  | "youtube_profile"
+  | "instagram_ads";
+
+export type CampaignVisitDay = {
+  day: string;
+  channel: CampaignChannel;
+  visits: number;
+};
+
 export interface DashboardDay {
   day: string;
   members: number;

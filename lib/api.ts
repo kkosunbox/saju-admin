@@ -10,6 +10,7 @@ import type {
   Admin,
   AiUsageRow,
   AiUsageSummary,
+  CampaignVisitDay,
   Dashboard,
   UserInsights,
   Entitlement,
@@ -119,6 +120,8 @@ export const api = {
 
   dashboard: (query: { from?: string; to?: string; includeTest?: boolean }) =>
     request<Dashboard>("/admin/dashboard/summary", { query }),
+  campaignVisits: (query: { from?: string; to?: string }) =>
+    request<CampaignVisitDay[]>("/admin/dashboard/campaign-visits", { query }),
   memberRetention: (query: { from?: string; to?: string }) =>
     request<MemberRetention>("/admin/dashboard/retention", { query }),
 

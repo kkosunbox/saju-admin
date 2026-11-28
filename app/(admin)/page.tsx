@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 import { BarChart } from "@/components/BarChart";
+import { CampaignTraffic } from "@/components/CampaignTraffic";
 import { MemberRetention } from "@/components/MemberRetention";
 import { UserInsightsCard } from "@/components/UserInsights";
 import {
@@ -144,6 +145,7 @@ export default function DashboardPage() {
         </div>
       )}
       <div className="mt-5 space-y-5">
+        <CampaignTraffic range={range} />
         <UserInsightsCard />
         <MemberRetention />
       </div>
